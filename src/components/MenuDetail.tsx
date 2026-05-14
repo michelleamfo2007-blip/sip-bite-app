@@ -1,0 +1,142 @@
+import { useParams, Link } from "react-router-dom";
+import { useState, useMemo, useRef } from "react";
+import { ArrowLeft, Plus, Minus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useCart } from "@/context/CartContext";
+import { menuData } from "@/data/menu";
+
+export default function MenuDetail() {
+  const { id } = useParams<{ id: string }>();
+  const { addToCart } = useCart();
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  const item = useMemo(() => {
+    const all = [...menuData.drinks, ...menuData.regular, ...menuData.snacks, ...menuData.packages];
+    return all.find((i) => i.id === id);
+  }, [id]);
+
+  const [qty, setQty] = useState(1);
+  const [selectedOption, setSelectedOption] = useState(
+    item?.options ? item.options[0] : ""
+  );
+
+  if (!item) {
+    return (
+      <div className="min-h-[400px] flex flex-col items-center justify-center gap-6">
+        <p className="text-lg font-bold">Item not found.</p>
+        <Button render={<Link to="/menu">Back to Menu</Link>} />
+      </div>
+    );
+  }
+
+  const flyToCart = () => {
+    const img = imgRef.current;
+    const cartBtn = document.getElementById('cart-button');
+    if (!img || !cartBtn) return;
+    const imgRect = img.getBoundingClientRect();
+    const cartRect = cartBtn.getBoundingClientRect();
+    const clone = img.cloneNode(true) as HTMLImageElement;
+    clone.style.position = 'fixed';
+    clone.style.top = `${imgRect.top}px`;
+    clone.style.left = `${imgRect.left}px`;
+    clone.style.width = `${imgRect.width}px`;
+    clone.style.height = `${imgRect.height}px`;
+    clone.style.objectFit = 'cover';
+    clone.style.borderRadius = '16px';
+    clone.style.zIndex = '9999';
+    clone.style.pointerEvents = 'none';
+    document.body.appendChild(clone);
+    const dx = cartRect.left + cartRect.width / 2 - (imgRect.left + imgRect.width / 2);
+    const dy = cartRect.top + cartRect.height / 2 - (imgRect.top + imgRect.height / 2);
+    const anim = clone.animate([
+      { transform: 'translate(0, 0) scale(1)', opacity: 1, borderRadius: '16px' },
+      { transform: `translate(${dx}px, ${dy}px) scale(0.2)`, opacity: 0.3, borderRadius: '999px' }
+    ], { duration: 700, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+    anim.onfinish = () => clone.remove();
+  };
+
+  const handleAdd = () => {
+    flyToCart();
+    addToCart({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: qty,
+      image: item.image,
+      customization: selectedOption,
+    });
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-6">
+        <Button variant="ghost" className="rounded-full h-10 w-auto px-3" render={<Link to="/menu" /> }>
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back to menu
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+        <div className="bg-white rounded-[24px] shadow-sm border border-slate-100 overflow-hidden">
+          <img ref={imgRef} src={item.image} alt={item.name} className="w-full h-auto object-cover" />
+        </div>
+
+        <div className="space-y-6">
+          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-brand-dark">
+            {item.name}
+          </h1>
+          {item.description && (
+            <p className="text-slate-500 font-medium">{item.description}</p>
+          )}
+          <div className="h-px bg-slate-200" />
+          <div className="text-2xl font-black text-brand-dark">GH₵{item.price.toFixed(2)}</div>
+
+          {item.options && (
+            <div className="space-y-3">
+              <Label className="text-sm font-black uppercase tracking-widest text-slate-400">Choose an option</Label>
+              <RadioGroup
+                defaultValue={selectedOption}
+                onValueChange={setSelectedOption}
+                className="grid grid-cols-2 gap-4"
+              >
+                {item.options.map((opt: string) => (
+                  <div
+                    key={opt}
+                    className="flex items-center space-x-2 bg-slate-50 p-4 rounded-xl border-2 border-transparent has-[:checked]:border-brand-red transition-all"
+                  >
+                    <RadioGroupItem value={opt} id={opt} className="text-brand-red" />
+                    <Label htmlFor={opt} className="font-bold cursor-pointer flex-grow">
+                      {opt}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Quantity</span>
+            <div className="flex items-center gap-2 bg-slate-50 rounded-lg p-1">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQty(Math.max(1, qty - 1))}>
+                <Minus className="w-4 h-4" />
+              </Button>
+              <span className="text-base font-black w-8 text-center">{qty}</span>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQty(qty + 1)}>
+                <Plus className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+
+          <Button
+            className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-6 rounded-full uppercase"
+            onClick={handleAdd}
+          >
+            Customise and order
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
