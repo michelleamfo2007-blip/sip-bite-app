@@ -2,26 +2,40 @@ import { useState } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Cart from "./Cart";
 import AuthDialogButton from "./AuthDialog";
 import { useAuth } from "@/context/AuthContext";
 
 const navLinks = [
-  { name: "Home", href: "/" },
-  { name: "Menu", href: "/menu" },
-  { name: "About", href: "/about" },
-  { name: "Contact", href: "/contact" },
+  { name: "Home", href: "/#home" },
+  { name: "Menu", href: "/#menu" },
+  { name: "About", href: "/#about" },
+  { name: "Contact", href: "/#contact" },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
+  const location = useLocation();
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('/#') && location.pathname === '/') {
+      e.preventDefault();
+      const id = href.substring(2);
+      if (id === 'home') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      }
+      setIsOpen(false);
+    }
+  };
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-brand-red text-white shadow-lg">
+    <nav className="relative z-50 w-full bg-brand-red text-white shadow-lg">
       <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3">
+        <Link to="/" onClick={(e) => handleNavClick(e, '/#home')} className="flex items-center gap-3">
           <div className="bg-brand-yellow text-brand-red px-3 py-1 rounded-lg font-black text-xl">
             GH
           </div>
@@ -36,6 +50,7 @@ export default function Navbar() {
             <Link
               key={link.name}
               to={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
               className="text-sm font-bold uppercase tracking-wider hover:text-brand-yellow transition-colors"
             >
               {link.name}
@@ -70,7 +85,7 @@ export default function Navbar() {
                   <Link
                     key={link.name}
                     to={link.href}
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => handleNavClick(e, link.href)}
                     className="text-2xl font-black uppercase tracking-tighter hover:text-brand-yellow transition-colors"
                   >
                     {link.name}

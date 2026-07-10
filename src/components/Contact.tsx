@@ -121,12 +121,12 @@ export default function Contact({ compact = false }: { compact?: boolean }) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
-            <h4 className="font-black text-brand-dark mb-2 uppercase text-sm">Do you offer delivery?</h4>
-            <p className="text-slate-600 text-sm">Yes, we deliver across central Accra. Order via WhatsApp for the fastest response.</p>
+            <h4 className="font-black text-brand-dark mb-2 uppercase text-sm">Where are you located?</h4>
+            <p className="text-slate-600 text-sm">We operate exclusively at events and pop-ups around Accra, like Detty Slam at Ghud Park.</p>
           </div>
           <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
-            <h4 className="font-black text-brand-dark mb-2 uppercase text-sm">How long does delivery take?</h4>
-            <p className="text-slate-600 text-sm">Typically 20–45 minutes depending on your location and time of day.</p>
+            <h4 className="font-black text-brand-dark mb-2 uppercase text-sm">Can I pre-order for an event?</h4>
+            <p className="text-slate-600 text-sm">Yes! Use our website to pre-order and skip the line when you arrive at our stand.</p>
           </div>
           <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
             <h4 className="font-black text-brand-dark mb-2 uppercase text-sm">What areas do you cover?</h4>
@@ -144,8 +144,8 @@ export default function Contact({ compact = false }: { compact?: boolean }) {
       <section className="p-8 bg-white rounded-[24px] shadow-sm border border-slate-100">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 text-center">
-            <Truck className="w-8 h-8 text-brand-red mx-auto mb-2" />
-            <h4 className="font-black text-brand-dark">Fast Delivery</h4>
+            <MapPin className="w-8 h-8 text-brand-red mx-auto mb-2" />
+            <h4 className="font-black text-brand-dark">Event Pop-ups</h4>
           </div>
           <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 text-center">
             <Leaf className="w-8 h-8 text-brand-red mx-auto mb-2" />

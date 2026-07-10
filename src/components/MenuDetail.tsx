@@ -1,14 +1,12 @@
-import { useParams, Link } from "react-router-dom";
 import { useState, useMemo, useRef } from "react";
-import { ArrowLeft, Plus, Minus } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCart } from "@/context/CartContext";
 import { menuData } from "@/data/menu";
 
-export default function MenuDetail() {
-  const { id } = useParams<{ id: string }>();
+export default function MenuDetail({ id, onClose }: { id: string; onClose?: () => void }) {
   const { addToCart } = useCart();
   const imgRef = useRef<HTMLImageElement | null>(null);
 
@@ -24,9 +22,8 @@ export default function MenuDetail() {
 
   if (!item) {
     return (
-      <div className="min-h-[400px] flex flex-col items-center justify-center gap-6">
+      <div className="p-8 text-center">
         <p className="text-lg font-bold">Item not found.</p>
-        <Button render={<Link to="/menu">Back to Menu</Link>} />
       </div>
     );
   }
@@ -67,29 +64,25 @@ export default function MenuDetail() {
       image: item.image,
       customization: selectedOption,
     });
+    if (onClose) setTimeout(onClose, 300);
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-6">
-        <Button variant="ghost" className="rounded-full h-10 w-auto px-3" render={<Link to="/menu" /> }>
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to menu
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-        <div className="bg-white rounded-[24px] shadow-sm border border-slate-100 overflow-hidden">
-          <img ref={imgRef} src={item.image} alt={item.name} className="w-full h-auto object-cover" />
+    <div className="bg-white rounded-[24px] overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-0 items-stretch">
+        <div className="bg-white overflow-hidden relative">
+          <img ref={imgRef} src={item.image} alt={item.name} className="w-full h-full object-cover min-h-[300px]" />
         </div>
 
-        <div className="space-y-6">
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-brand-dark">
-            {item.name}
-          </h1>
-          {item.description && (
-            <p className="text-slate-500 font-medium">{item.description}</p>
-          )}
+        <div className="p-8 flex flex-col justify-center space-y-6 bg-white">
+          <div>
+            <h1 className="text-3xl font-black uppercase tracking-tighter text-brand-dark mb-2">
+              {item.name}
+            </h1>
+            {item.description && (
+              <p className="text-slate-500 font-medium text-sm">{item.description}</p>
+            )}
+          </div>
           <div className="h-px bg-slate-200" />
           <div className="text-2xl font-black text-brand-dark">GH₵{item.price.toFixed(2)}</div>
 
@@ -99,15 +92,15 @@ export default function MenuDetail() {
               <RadioGroup
                 defaultValue={selectedOption}
                 onValueChange={setSelectedOption}
-                className="grid grid-cols-2 gap-4"
+                className="grid grid-cols-2 gap-3"
               >
                 {item.options.map((opt: string) => (
                   <div
                     key={opt}
-                    className="flex items-center space-x-2 bg-slate-50 p-4 rounded-xl border-2 border-transparent has-[:checked]:border-brand-red transition-all"
+                    className="flex items-center space-x-2 bg-slate-50 p-3 rounded-xl border-2 border-transparent has-[:checked]:border-brand-red transition-all"
                   >
                     <RadioGroupItem value={opt} id={opt} className="text-brand-red" />
-                    <Label htmlFor={opt} className="font-bold cursor-pointer flex-grow">
+                    <Label htmlFor={opt} className="font-bold cursor-pointer flex-grow text-sm">
                       {opt}
                     </Label>
                   </div>
@@ -116,7 +109,7 @@ export default function MenuDetail() {
             </div>
           )}
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-auto pt-4">
             <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Quantity</span>
             <div className="flex items-center gap-2 bg-slate-50 rounded-lg p-1">
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQty(Math.max(1, qty - 1))}>
@@ -130,7 +123,7 @@ export default function MenuDetail() {
           </div>
 
           <Button
-            className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-6 rounded-full uppercase"
+            className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-6 rounded-full uppercase mt-4"
             onClick={handleAdd}
           >
             Customise and order

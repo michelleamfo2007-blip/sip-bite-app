@@ -20,7 +20,7 @@ const testimonials = [
   {
     name: "Ama Serwaa",
     role: "Regular Customer",
-    content: "Their 'Sweet Chicks' package is my go-to lunch. Fast delivery and the fries are always crispy.",
+    content: "Their 'Sweet Chicks' package is my go-to lunch. Picked it up at the Detty Slam event and the fries were perfectly crispy.",
     image: "https://i.pravatar.cc/150?u=ama",
     rating: 5
   },

@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { menuData } from "@/data/menu";
 import chickenImg from "../../images/chicken.jpg";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import MenuDetail from "./MenuDetail";
 import { motion } from "motion/react";
 
 export default function Menu() {
@@ -17,6 +19,7 @@ export default function Menu() {
   ];
 
   const [active, setActive] = useState<string>('promotions');
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const allItems = [
     ...menuData.drinks,
@@ -93,13 +96,21 @@ export default function Menu() {
           title={c.label}
           items={sections[c.key]}
           isPackage={c.key === 'promotions'}
+          onSelect={setSelectedItemId}
         />
       ))}
+
+      <Dialog open={!!selectedItemId} onOpenChange={(open) => !open && setSelectedItemId(null)}>
+        <DialogContent className="max-w-4xl p-0 overflow-hidden bg-transparent border-none shadow-none">
+          <DialogTitle className="sr-only">Menu Item Details</DialogTitle>
+          {selectedItemId && <MenuDetail id={selectedItemId} onClose={() => setSelectedItemId(null)} />}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
 
-function MenuCategory({ id, title, items, isPackage = false }: { id: string, title: string, items: any[], isPackage?: boolean, key?: string }) {
+function MenuCategory({ id, title, items, isPackage = false, onSelect }: { id: string, title: string, items: any[], isPackage?: boolean, key?: string, onSelect: (id: string) => void }) {
   const isDrinks = title.toLowerCase() === 'drinks';
   return (
     <motion.section
@@ -120,7 +131,7 @@ function MenuCategory({ id, title, items, isPackage = false }: { id: string, tit
       
       <div className={`grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`}>
         {items.map((item) => (
-          <MenuItem key={item.id} item={item} isPackage={isPackage} isDrinks={isDrinks} />
+          <MenuItem key={item.id} item={item} isPackage={isPackage} isDrinks={isDrinks} onSelect={() => onSelect(item.id)} />
         ))}
       </div>
     </motion.section>
@@ -140,39 +151,41 @@ interface MenuItemProps {
   };
   isPackage: boolean;
   isDrinks?: boolean;
+  onSelect: () => void;
 }
 
-function MenuItem({ item, isPackage, isDrinks }: MenuItemProps) {
+function MenuItem({ item, isPackage, isDrinks, onSelect }: MenuItemProps) {
   return (
     <motion.div
       whileHover={{ y: -4, scale: 1.02 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20, mass: 0.5 }}
-      className="group relative bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-all"
+      className="group relative bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-all cursor-pointer"
+      onClick={onSelect}
     >
-      <Link to={`/menu/${item.id}`} className="block w-full h-40 sm:h-44 bg-white">
+      <div className="block w-full h-40 sm:h-44 bg-white">
         <img
           src={item.image}
           alt={item.name}
-          className={`w-full h-full transform-gpu transition-transform duration-300 ${isDrinks ? 'object-contain p-6' : 'object-cover group-hover:scale-105'}`}
+          className={`w-full h-full transform-gpu transition-transform duration-300 object-cover group-hover:scale-105`}
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Image';
           }}
         />
-      </Link>
-      <Link to={`/menu/${item.id}`} className="block p-4 pb-16">
+      </div>
+      <div className="block p-4 pb-16">
         <div className="flex items-center gap-2 mb-1">
           <h4 className="font-black uppercase tracking-tight text-brand-dark text-sm sm:text-base">{item.name}</h4>
           {item.popular && <Flame className="w-4 h-4 text-brand-yellow fill-brand-yellow" />}
         </div>
         <div className="text-sm font-bold text-slate-500">GH₵{item.price.toFixed(2)}</div>
-      </Link>
-      <Link to={`/menu/${item.id}`} className="absolute left-1/2 -translate-x-1/2 bottom-4">
+      </div>
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-4">
         <motion.div whileTap={{ scale: 0.9 }}>
-          <Button size="icon" className="rounded-full size-12 bg-brand-red text-white shadow-lg">
+          <Button size="icon" className="rounded-full size-12 bg-brand-red text-white shadow-lg" onClick={(e) => { e.stopPropagation(); onSelect(); }}>
             <ShoppingCart className="w-5 h-5" />
           </Button>
         </motion.div>
-      </Link>
+      </div>
     </motion.div>
   );
 }

@@ -6,14 +6,13 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { ArrowLeft, CreditCard, Truck, Store, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CreditCard, MapPin, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Checkout() {
   const { cart, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
   const [step, setStep] = useState(1);
-  const [orderType, setOrderType] = useState("delivery");
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleOrder = async (e: React.FormEvent) => {
@@ -60,22 +59,16 @@ export default function Checkout() {
           <section className="bg-white p-8 rounded-[24px] shadow-sm border border-slate-100">
             <h2 className="text-xl font-black text-brand-dark uppercase tracking-widest mb-6 flex items-center gap-2">
               <span className="bg-brand-red text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
-              Order Type
+              Event Details
             </h2>
-            <RadioGroup defaultValue={orderType} onValueChange={setOrderType} className="grid grid-cols-2 gap-4">
-              <div className="flex items-center space-x-2 bg-slate-50 p-6 rounded-2xl border-2 border-transparent has-[:checked]:border-brand-red transition-all cursor-pointer">
-                <RadioGroupItem value="delivery" id="delivery" className="text-brand-red" />
-                <Label htmlFor="delivery" className="font-bold cursor-pointer flex items-center gap-2">
-                  <Truck className="w-4 h-4" /> Delivery
-                </Label>
+            <div className="flex items-start space-x-3 bg-brand-red/5 p-6 rounded-2xl border-2 border-brand-red/20">
+              <MapPin className="text-brand-red w-6 h-6 mt-1 flex-shrink-0" />
+              <div>
+                <h3 className="font-black text-brand-dark uppercase text-lg">DETTY SLAM</h3>
+                <p className="text-sm font-medium text-slate-600 mt-1">Ghud Park, around Accra Mall</p>
+                <p className="text-xs font-bold text-brand-red mt-2 uppercase tracking-widest">Pre-order for pickup at event</p>
               </div>
-              <div className="flex items-center space-x-2 bg-slate-50 p-6 rounded-2xl border-2 border-transparent has-[:checked]:border-brand-red transition-all cursor-pointer">
-                <RadioGroupItem value="pickup" id="pickup" className="text-brand-red" />
-                <Label htmlFor="pickup" className="font-bold cursor-pointer flex items-center gap-2">
-                  <Store className="w-4 h-4" /> Pickup
-                </Label>
-              </div>
-            </RadioGroup>
+            </div>
           </section>
 
           <section className="bg-white p-8 rounded-[24px] shadow-sm border border-slate-100">
@@ -94,13 +87,6 @@ export default function Checkout() {
                   <Input id="phone" required className="rounded-xl border-slate-200 h-12" placeholder="+233..." />
                 </div>
               </div>
-              {orderType === "delivery" && (
-                <div className="space-y-2">
-                  <Label htmlFor="address" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Delivery Address</Label>
-                  <Input id="address" required className="rounded-xl border-slate-200 h-12" placeholder="Street name, Area, Accra" />
-                </div>
-              )}
-              
               <div className="pt-6">
                 <h2 className="text-xl font-black text-brand-dark uppercase tracking-widest mb-6 flex items-center gap-2">
                   <span className="bg-brand-red text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span>
@@ -119,7 +105,7 @@ export default function Checkout() {
                   disabled={isProcessing || cart.length === 0}
                   className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-8 rounded-2xl text-xl uppercase shadow-xl shadow-brand-red/20"
                 >
-                  {isProcessing ? "Processing..." : `Pay GH₵ ${totalPrice + (orderType === "delivery" ? 10 : 0)}`}
+                  {isProcessing ? "Processing..." : `Pay GH₵ ${totalPrice}`}
                 </Button>
               </div>
             </form>
@@ -147,12 +133,12 @@ export default function Checkout() {
                 <span>GH₵ {totalPrice}</span>
               </div>
               <div className="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-widest">
-                <span>{orderType === "delivery" ? "Delivery" : "Pickup"}</span>
-                <span>GH₵ {orderType === "delivery" ? 10 : 0}</span>
+                <span>Event Pickup</span>
+                <span>FREE</span>
               </div>
               <div className="flex justify-between text-xl font-black text-brand-dark uppercase tracking-tighter pt-2">
                 <span>Total</span>
-                <span className="text-brand-red">GH₵ {totalPrice + (orderType === "delivery" ? 10 : 0)}</span>
+                <span className="text-brand-red">GH₵ {totalPrice}</span>
               </div>
             </div>
           </div>
