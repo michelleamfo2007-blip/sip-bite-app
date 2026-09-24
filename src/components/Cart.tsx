@@ -99,13 +99,13 @@ export default function Cart() {
                 <span>GH₵ {totalPrice}</span>
               </div>
               <div className="flex justify-between text-sm font-bold text-slate-400 uppercase tracking-widest">
-                <span>Delivery</span>
-                <span>GH₵ 10</span>
+                <span>Event Pickup</span>
+                <span>FREE</span>
               </div>
               <Separator className="my-2" />
               <div className="flex justify-between text-xl font-black text-brand-dark uppercase tracking-tighter">
                 <span>Total</span>
-                <span className="text-brand-red">GH₵ {totalPrice + 10}</span>
+                <span className="text-brand-red">GH₵ {totalPrice}</span>
               </div>
             </div>
             <Button className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-7 rounded-2xl text-lg uppercase shadow-xl shadow-brand-red/20" render={<Link to="/checkout" /> }>

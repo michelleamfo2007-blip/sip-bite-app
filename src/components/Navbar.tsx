@@ -8,15 +8,29 @@ import AuthDialogButton from "./AuthDialog";
 import { useAuth } from "@/context/AuthContext";
 
 const navLinks = [
-  { name: "Home", href: "/" },
-  { name: "Menu", href: "/menu" },
-  { name: "About", href: "/about" },
-  { name: "Contact", href: "/contact" },
+  { name: "Home", href: "/#home" },
+  { name: "Menu", href: "/#menu" },
+  { name: "About", href: "/#about" },
+  { name: "Contact", href: "/#contact" },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
+  const location = useLocation();
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('/#') && location.pathname === '/') {
+      e.preventDefault();
+      const id = href.substring(2);
+      if (id === 'home') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      }
+      setIsOpen(false);
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-black/5 bg-brand-cream/85 text-brand-dark backdrop-blur-md">

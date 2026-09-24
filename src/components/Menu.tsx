@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { menuData } from "@/data/menu";
 import chickenImg from "../../images/chicken.jpg";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import MenuDetail from "./MenuDetail";
 import { motion } from "motion/react";
 
 export default function Menu() {
@@ -17,6 +19,7 @@ export default function Menu() {
   ];
 
   const [active, setActive] = useState<string>('promotions');
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const allItems = [
     ...menuData.drinks,
@@ -98,6 +101,7 @@ export default function Menu() {
           title={c.label}
           items={sections[c.key]}
           isPackage={c.key === 'promotions'}
+          onSelect={setSelectedItemId}
         />
       ))}
       </div>
@@ -105,7 +109,7 @@ export default function Menu() {
   );
 }
 
-function MenuCategory({ id, title, items, isPackage = false }: { id: string, title: string, items: any[], isPackage?: boolean, key?: string }) {
+function MenuCategory({ id, title, items, isPackage = false, onSelect }: { id: string, title: string, items: any[], isPackage?: boolean, key?: string, onSelect: (id: string) => void }) {
   const isDrinks = title.toLowerCase() === 'drinks';
   return (
     <motion.section
@@ -119,7 +123,7 @@ function MenuCategory({ id, title, items, isPackage = false }: { id: string, tit
       <h2 className="mb-6 font-display text-3xl font-medium text-brand-dark md:text-4xl">{title}</h2>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {items.map((item) => (
-          <MenuItem key={item.id} item={item} isPackage={isPackage} isDrinks={isDrinks} />
+          <MenuItem key={item.id} item={item} isPackage={isPackage} isDrinks={isDrinks} onSelect={() => onSelect(item.id)} />
         ))}
       </div>
     </motion.section>
@@ -139,6 +143,7 @@ interface MenuItemProps {
   };
   isPackage: boolean;
   isDrinks?: boolean;
+  onSelect: () => void;
 }
 
 function MenuItem({ item, isDrinks }: MenuItemProps) {
