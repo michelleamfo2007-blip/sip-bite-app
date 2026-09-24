@@ -1,12 +1,14 @@
+import { useParams, Link } from "react-router-dom";
 import { useState, useMemo, useRef } from "react";
-import { Plus, Minus } from "lucide-react";
+import { ArrowLeft, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCart } from "@/context/CartContext";
 import { menuData } from "@/data/menu";
 
-export default function MenuDetail({ id, onClose }: { id: string; onClose?: () => void }) {
+export default function MenuDetail() {
+  const { id } = useParams<{ id: string }>();
   const { addToCart } = useCart();
   const imgRef = useRef<HTMLImageElement | null>(null);
 
@@ -22,8 +24,9 @@ export default function MenuDetail({ id, onClose }: { id: string; onClose?: () =
 
   if (!item) {
     return (
-      <div className="p-8 text-center">
+      <div className="min-h-[400px] flex flex-col items-center justify-center gap-6">
         <p className="text-lg font-bold">Item not found.</p>
+        <Button render={<Link to="/menu">Back to Menu</Link>} />
       </div>
     );
   }
@@ -64,7 +67,6 @@ export default function MenuDetail({ id, onClose }: { id: string; onClose?: () =
       image: item.image,
       customization: selectedOption,
     });
-    if (onClose) setTimeout(onClose, 300);
   };
 
   return (
@@ -97,15 +99,15 @@ export default function MenuDetail({ id, onClose }: { id: string; onClose?: () =
               <RadioGroup
                 defaultValue={selectedOption}
                 onValueChange={setSelectedOption}
-                className="grid grid-cols-2 gap-3"
+                className="grid grid-cols-2 gap-4"
               >
                 {item.options.map((opt: string) => (
                   <div
                     key={opt}
-                    className="flex items-center space-x-2 bg-slate-50 p-3 rounded-xl border-2 border-transparent has-[:checked]:border-brand-red transition-all"
+                    className="flex items-center space-x-2 bg-slate-50 p-4 rounded-xl border-2 border-transparent has-[:checked]:border-brand-red transition-all"
                   >
                     <RadioGroupItem value={opt} id={opt} className="text-brand-red" />
-                    <Label htmlFor={opt} className="font-bold cursor-pointer flex-grow text-sm">
+                    <Label htmlFor={opt} className="font-bold cursor-pointer flex-grow">
                       {opt}
                     </Label>
                   </div>
@@ -114,7 +116,7 @@ export default function MenuDetail({ id, onClose }: { id: string; onClose?: () =
             </div>
           )}
 
-          <div className="flex items-center justify-between mt-auto pt-4">
+          <div className="flex items-center justify-between">
             <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Quantity</span>
             <div className="flex items-center gap-2 bg-slate-50 rounded-lg p-1">
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQty(Math.max(1, qty - 1))}>
@@ -128,7 +130,7 @@ export default function MenuDetail({ id, onClose }: { id: string; onClose?: () =
           </div>
 
           <Button
-            className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-6 rounded-full uppercase mt-4"
+            className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-6 rounded-full uppercase"
             onClick={handleAdd}
           >
             Customise and order

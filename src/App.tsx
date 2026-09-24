@@ -1,12 +1,14 @@
 import { useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, useScroll, useSpring, AnimatePresence } from "motion/react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Menu from "./components/Menu";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import About from "./components/About";
 import Testimonials from "./components/Testimonials";
 import Checkout from "./components/Checkout";
+import MenuDetail from "./components/MenuDetail";
 import ResetPassword from "./components/ResetPassword";
 import Admin from "./components/Admin";
 import { CartProvider } from "./context/CartContext";
@@ -45,6 +47,10 @@ function AnimatedRoutes() {
       >
         <Routes location={location}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/menu/:id" element={<MenuDetail />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin" element={<Admin />} />
@@ -176,6 +182,13 @@ function HomePage() {
 }
 
 export default function App() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
   return (
     <CartProvider>
       <AuthProvider>
