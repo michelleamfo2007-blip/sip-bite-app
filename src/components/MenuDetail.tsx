@@ -70,7 +70,7 @@ export default function MenuDetail() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="mx-auto max-w-6xl px-6 py-10">
       <div className="mb-6">
         <Button variant="ghost" className="rounded-full h-10 w-auto px-3" render={<Link to="/menu" /> }>
           <ArrowLeft className="w-5 h-5 mr-2" />
@@ -79,12 +79,12 @@ export default function MenuDetail() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-        <div className="bg-white rounded-[24px] shadow-sm border border-slate-100 overflow-hidden">
+        <div className="overflow-hidden rounded-[28px] bg-brand-white">
           <img ref={imgRef} src={item.image} alt={item.name} className="w-full h-auto object-cover" />
         </div>
 
         <div className="space-y-6">
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-brand-dark">
+          <h1 className="font-display text-4xl font-medium text-brand-dark md:text-5xl">
             {item.name}
           </h1>
           {item.description && (

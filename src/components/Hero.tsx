@@ -1,53 +1,38 @@
-import { motion, useScroll, useTransform } from "motion/react";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import friesImg from "../../images/friesss.jpg";
-import { useRef } from "react";
 import { Link } from "react-router-dom";
 
 export default function Hero() {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["-2%", "2%"]); 
-  const scale = useTransform(scrollYProgress, [0, 1], [1.05, 1.12]);
   return (
-    <section ref={ref} id="home" className="relative overflow-hidden bg-brand-dark text-white p-12 rounded-[24px] min-h-[500px] flex flex-col justify-center">
-      {/* Background image and overlay */}
-      <motion.img
-        src={friesImg}
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover z-0"
-        style={{ y, scale }}
-      />
-      <div className="absolute inset-0 bg-black/50 z-10" />
-
-      {/* Decorative background elements */}
-      <div className="absolute bottom-[-20px] right-[-20px] w-48 h-48 bg-brand-red opacity-30 rounded-full z-20" />
-      <div className="absolute top-8 right-8 text-7xl opacity-20 select-none z-20">🍗</div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="relative z-30"
-      >
-        <h1 className="text-6xl md:text-7xl lg:text-8xl font-black leading-[0.9] mb-6 uppercase tracking-tighter">
-          CHICKEN,<br />
-          <span className="text-brand-yellow">KEBABS</span><br />
-          & MORE.
-        </h1>
-        <p className="text-lg md:text-xl opacity-90 font-medium mb-10 max-w-md">
-          The boldest taste in Accra. Hot, spicy, and delivered fresh to your doorstep.
+    <section id="home" className="grid min-h-[calc(100vh-72px)] bg-brand-dark text-white md:grid-cols-2">
+      <div className="flex flex-col justify-end px-6 py-14 sm:px-10 lg:px-16">
+        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-brand-yellow">
+          Osu, Accra · Open 10am–11pm
         </p>
-        <div className="flex flex-wrap gap-3">
-          <Button className="bg-brand-red hover:bg-brand-red/90 text-white font-black rounded-full px-6 uppercase" render={<Link to="/menu#promotions">Order Now</Link>} />
-          <Button variant="outline" className="bg-white/90 text-brand-dark hover:bg-white rounded-full px-6 font-black uppercase" render={<Link to="/menu">View Menu</Link>} />
+        <h1 className="mt-5 max-w-xl font-display text-5xl font-medium leading-[0.95] sm:text-6xl lg:text-7xl">
+          Chicken, kebabs, and the fries you came for.
+        </h1>
+        <p className="mt-6 max-w-md text-lg text-white/75">
+          Street-grill flavor, cooked fresh and sent hot across Accra.
+        </p>
+        <div className="mt-10 flex flex-wrap gap-3">
+          <Link
+            to="/menu#promotions"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-red px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-red/90"
+          >
+            Order now <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
+            to="/menu"
+            className="inline-flex items-center rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+          >
+            See the menu
+          </Link>
         </div>
-        <div className="mt-auto pt-8">
-          <p className="text-[10px] uppercase tracking-[4px] opacity-60 font-black">Daily Specials Available</p>
-        </div>
-      </motion.div>
+      </div>
+      <div className="relative min-h-[360px]">
+        <img src={friesImg} alt="Golden fries" className="absolute inset-0 h-full w-full object-cover" />
+      </div>
     </section>
   );
 }

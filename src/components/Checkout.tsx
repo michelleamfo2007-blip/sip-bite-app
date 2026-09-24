@@ -48,7 +48,7 @@ export default function Checkout() {
   }
 
   return (
-    <div className="py-12 max-w-4xl mx-auto">
+    <div className="mx-auto max-w-4xl px-6 py-12">
       <div className="flex items-center gap-4 mb-8">
         <Button variant="ghost" className="rounded-full h-12 w-12 p-0" render={<Link to="/"><ArrowLeft className="w-6 h-6" /></Link>} />
         <h1 className="text-4xl font-black text-brand-dark uppercase tracking-tighter">Checkout</h1>

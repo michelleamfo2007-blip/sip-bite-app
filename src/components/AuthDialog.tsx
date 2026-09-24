@@ -75,7 +75,7 @@ export default function AuthDialogButton() {
         <div className="relative" onMouseLeave={() => setMenuOpen(false)}>
           <button
             type="button"
-            className="inline-flex items-center gap-2 text-white hover:text-brand-yellow font-bold"
+            className="inline-flex items-center gap-2 text-brand-dark hover:text-brand-red font-medium"
             onClick={() => setMenuOpen((v) => !v)}
           >
             <span>Hi, {user.name.split(" ")[0]}</span>
@@ -101,7 +101,7 @@ export default function AuthDialogButton() {
       ) : (
         <DialogTrigger
           render={
-            <Button variant="ghost" size="icon" className="text-white hover:text-brand-yellow">
+            <Button variant="ghost" size="icon" className="text-brand-dark hover:text-brand-red">
               <User className="w-5 h-5" />
               <span className="sr-only">Sign in</span>
             </Button>

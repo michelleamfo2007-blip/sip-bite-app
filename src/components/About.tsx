@@ -1,127 +1,97 @@
-import { motion } from "motion/react";
-import { Leaf, Flame, Truck } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Leaf, Flame, Truck, ArrowRight } from "lucide-react";
 import friesImg from "../../images/friesss.jpg";
 import chickenImg from "../../images/chicken.jpg";
 import sweetChicksImg from "../../images/sweet chickss.jpg";
 import kebabImg from "../../images/kebahh.webp";
-import { Button } from "@/components/ui/button";
 import Testimonials from "./Testimonials";
 import Contact from "./Contact";
 
+const differences = [
+  { icon: Leaf, title: "Fresh ingredients", text: "We buy from local Ghanaian markets, then cook the same day." },
+  { icon: Flame, title: "Authentic spice", text: "Blends built from street-grill recipes, not a bottled shortcut." },
+  { icon: Truck, title: "On time", text: "Hot food, packed to travel, across central Accra." },
+];
+
 export default function About() {
   return (
-    <div className="flex flex-col gap-12 py-12">
-      {/* 1. HERO */}
-      <section className="relative overflow-hidden bg-brand-dark text-white p-12 rounded-[24px] min-h-[380px] flex flex-col justify-center">
-        <img
-          src={sweetChicksImg}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        />
-        <div className="absolute inset-0 bg-black/50 z-10" />
-        <div className="absolute bottom-[-20px] left-[-20px] w-48 h-48 bg-brand-yellow opacity-20 rounded-full z-20" />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative z-30 max-w-2xl"
-        >
-          <h1 className="text-5xl md:text-7xl font-black leading-none mb-4 uppercase tracking-tighter">About <span className="text-brand-yellow">Sip & Bite</span></h1>
-          <p className="text-lg md:text-xl opacity-90 font-medium mb-6">Serving bold, authentic flavors across Accra.</p>
-          <div className="flex gap-3">
-            <Button className="bg-brand-red hover:bg-brand-red/90 text-white font-black rounded-full px-6 uppercase" render={<a href="/menu#promotions">Order Now</a>} />
-            <Button variant="outline" className="bg-white/90 text-brand-dark hover:bg-white rounded-full px-6 font-black uppercase" render={<a href="/menu">View Menu</a>} />
+    <div>
+      <section className="grid bg-brand-dark text-white md:grid-cols-2">
+        <div className="flex flex-col justify-end px-6 py-16 sm:px-10 lg:px-16">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-yellow">About</p>
+          <h1 className="mt-4 max-w-xl font-display text-5xl font-medium leading-tight md:text-6xl">
+            Sip & Bite, from an Osu grill.
+          </h1>
+          <p className="mt-4 max-w-md text-lg text-white/75">Bold plates for late nights, quick lunches, and everyone in between.</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link to="/menu#promotions" className="inline-flex items-center gap-2 rounded-full bg-brand-red px-6 py-3 text-sm font-semibold text-white">
+              Order now <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/menu" className="inline-flex items-center rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-white">
+              View menu
+            </Link>
           </div>
-        </motion.div>
+        </div>
+        <div className="relative min-h-[320px]">
+          <img src={sweetChicksImg} alt="Sweet chicks combo" className="absolute inset-0 h-full w-full object-cover" />
+        </div>
       </section>
 
-      {/* 2. OUR STORY */}
-      <section className="p-10 rounded-[24px] bg-white shadow-sm border border-slate-100">
-        <h2 className="text-3xl font-black text-brand-dark mb-4 uppercase tracking-tighter">Our Story</h2>
-        <p className="text-slate-600 leading-relaxed font-medium max-w-3xl">
-          Sip & Bite started with a simple goal — to bring the rich, spicy taste of street food to everyone in Accra. From late-night cravings to quick lunches, we’ve created meals that are fast, fresh, and full of flavor.
+      <section className="mx-auto grid max-w-6xl gap-10 px-6 py-20 md:grid-cols-[1.1fr_0.9fr] md:items-end">
+        <h2 className="font-display text-4xl font-medium leading-tight md:text-5xl">
+          We started with one goal: street food that still tastes like the street.
+        </h2>
+        <p className="text-base leading-relaxed text-brand-dark/70">
+          Sip & Bite brings the heat of Accra’s night stalls to a counter you can actually order from. Late cravings, office lunches, and everything in between — fast, fresh, and seasoned properly.
         </p>
       </section>
 
-      {/* 3. WHAT MAKES US DIFFERENT */}
-      <section className="p-10 rounded-[24px] bg-brand-yellow shadow-sm border border-brand-yellow/20">
-        <h2 className="text-3xl font-black mb-6 text-brand-dark uppercase tracking-tighter">What Makes Us Different</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-2xl bg-white/90 border border-white">
-            <div className="w-10 h-10 rounded-xl bg-brand-red/10 flex items-center justify-center mb-3"><Leaf className="text-brand-red w-5 h-5" /></div>
-            <h4 className="font-black uppercase tracking-tight text-brand-dark mb-1">Fresh Ingredients</h4>
-            <p className="text-sm text-slate-600 font-medium">We source daily from local Ghanaian markets.</p>
-          </div>
-          <div className="p-6 rounded-2xl bg-white/90 border border-white">
-            <div className="w-10 h-10 rounded-xl bg-brand-red/10 flex items-center justify-center mb-3"><Flame className="text-brand-red w-5 h-5" /></div>
-            <h4 className="font-black uppercase tracking-tight text-brand-dark mb-1">Authentic Spices</h4>
-            <p className="text-sm text-slate-600 font-medium">Inspired by traditional recipes.</p>
-          </div>
-          <div className="p-6 rounded-2xl bg-white/90 border border-white">
-            <div className="w-10 h-10 rounded-xl bg-brand-red/10 flex items-center justify-center mb-3"><Truck className="text-brand-red w-5 h-5" /></div>
-            <h4 className="font-black uppercase tracking-tight text-brand-dark mb-1">Fast & Reliable Delivery</h4>
-            <p className="text-sm text-slate-600 font-medium">Hot food, right on time.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. OUR FOOD PHILOSOPHY */}
-      <section className="p-10 rounded-[24px] bg-white shadow-sm border border-slate-100">
-        <h2 className="text-3xl font-black text-brand-dark mb-4 uppercase tracking-tighter">Our Food Philosophy</h2>
-        <p className="text-slate-600 leading-relaxed font-medium max-w-3xl">
-          We believe great food should be affordable, satisfying, and full of character. Every meal we prepare is made with care, bold seasoning, and attention to quality.
-        </p>
-      </section>
-
-      {/* 5. BEHIND THE SCENES */}
-      <section className="p-10 rounded-[24px] bg-white shadow-sm border border-slate-100">
-        <div className="mb-6">
-          <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-md mb-4 inline-block bg-brand-red/10 text-brand-red">Behind the Scenes</span>
-          <h2 className="text-3xl font-black text-brand-dark uppercase tracking-tighter">In the Kitchen</h2>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {[friesImg, chickenImg, kebabImg, sweetChicksImg, friesImg, chickenImg].map((img, i) => (
-            <div key={i} className="aspect-video rounded-3xl overflow-hidden shadow-xl">
-              <img src={img} alt="Behind the scenes" className="w-full h-full object-cover" />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 6. MEET THE TEAM */}
-      <section className="p-10 rounded-[24px] bg-white shadow-sm border border-slate-100">
-        <div className="mb-6">
-          <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-md mb-4 inline-block bg-brand-red/10 text-brand-red">Team</span>
-          <h2 className="text-3xl font-black text-brand-dark uppercase tracking-tighter">Meet the Team</h2>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {[{name:'Head Chef',u:'chef1'},{name:'Sous Chef',u:'chef2'},{name:'Delivery Lead',u:'rider1'}].map((p,i)=> (
-            <div key={i} className="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center">
-              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white shadow-md mx-auto mb-3">
-                <img src={`https://i.pravatar.cc/150?u=${p.u}`} alt={p.name} className="w-full h-full object-cover" />
+      <section className="bg-brand-white py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="font-display text-4xl font-medium">What we won’t compromise.</h2>
+          <div className="mt-10 grid gap-8 md:grid-cols-3">
+            {differences.map((item) => (
+              <div key={item.title}>
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-red/10 text-brand-red">
+                  <item.icon className="h-5 w-5" />
+                </div>
+                <h3 className="font-display text-2xl font-medium">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-brand-dark/65">{item.text}</p>
               </div>
-              <h4 className="font-black uppercase tracking-tight text-brand-dark text-sm">{p.name}</h4>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* 7. CUSTOMER LOVE */}
-      <section className="space-y-6">
-        <div className="px-2">
-          <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-md mb-4 inline-block bg-brand-red/10 text-brand-red">Customer Love</span>
-          <h2 className="text-3xl font-black text-brand-dark uppercase tracking-tighter">What People Say</h2>
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <div className="grid items-center gap-10 md:grid-cols-2">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-red">How we cook</p>
+            <h2 className="mt-3 font-display text-4xl font-medium">Affordable, filling, and full of character.</h2>
+            <p className="mt-4 max-w-md leading-relaxed text-brand-dark/70">
+              Every plate is seasoned in-house and cooked to order. No heat lamps, no mystery sauce — just the grill, the spice, and a box that still smells like smoke when it arrives.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {[friesImg, chickenImg, kebabImg, sweetChicksImg].map((img) => (
+              <img key={img} src={img} alt="" className="aspect-[4/3] w-full rounded-3xl object-cover" />
+            ))}
+          </div>
         </div>
-        <Testimonials />
       </section>
 
-      {/* 8. VISIT / CONTACT */}
-      <Contact compact />
+      <Testimonials />
+      <div className="pt-16">
+        <Contact compact />
+      </div>
 
-      {/* 9. CTA */}
-      <section className="p-10 rounded-[24px] bg-brand-red text-white text-center shadow-sm border border-brand-red/30">
-        <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter mb-3">Ready to taste the difference?</h3>
-        <Button className="bg-white text-brand-red hover:bg-white/90 font-black rounded-full px-8 uppercase" render={<a href="/menu#promotions">Order Now</a>} />
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <div className="rounded-[32px] bg-brand-dark px-8 py-14 text-white md:px-14">
+          <h2 className="max-w-xl font-display text-4xl font-medium md:text-5xl">Ready to taste the difference?</h2>
+          <Link to="/menu#promotions" className="mt-8 inline-flex rounded-full bg-brand-red px-6 py-3 text-sm font-semibold text-white">
+            Order now
+          </Link>
+        </div>
       </section>
     </div>
   );

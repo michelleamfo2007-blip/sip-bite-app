@@ -11,11 +11,11 @@ export default function Cart() {
 
   return (
     <Sheet>
-      <SheetTrigger render={<Button id="cart-button" variant="outline" className="relative border-2 border-brand-red text-brand-red font-black rounded-full px-6 hover:bg-brand-red hover:text-white transition-all" /> }>
+      <SheetTrigger render={<Button id="cart-button" variant="outline" className="relative h-10 rounded-full border-black/10 bg-white px-4 font-medium text-brand-dark hover:bg-brand-dark hover:text-white" /> }>
         <ShoppingCart className="w-4 h-4 mr-2" />
         Cart
         {totalItems > 0 && (
-          <span className="absolute -top-2 -right-2 bg-brand-dark text-brand-yellow text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
+          <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-brand-cream bg-brand-red text-[10px] font-semibold text-white">
             {totalItems}
           </span>
         )}

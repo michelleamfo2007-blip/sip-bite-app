@@ -74,7 +74,7 @@ export default function Admin() {
   }
 
   return (
-    <div className="py-12 max-w-5xl mx-auto">
+    <div className="mx-auto max-w-5xl px-6 py-12">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-4xl font-black text-brand-dark uppercase tracking-tighter">Admin Dashboard</h1>
         <Button variant="outline" render={<Link to="/">Back</Link>} />

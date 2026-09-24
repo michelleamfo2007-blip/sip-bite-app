@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import Cart from "./Cart";
 import AuthDialogButton from "./AuthDialog";
 import { useAuth } from "@/context/AuthContext";
@@ -19,73 +19,93 @@ export default function Navbar() {
   const { user } = useAuth();
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-brand-red text-white shadow-lg">
-      <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+    <nav className="sticky top-0 z-50 w-full border-b border-black/5 bg-brand-cream/85 text-brand-dark backdrop-blur-md">
+      <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-6">
         <Link to="/" className="flex items-center gap-3">
-          <div className="bg-brand-yellow text-brand-red px-3 py-1 rounded-lg font-black text-xl">
-            GH
-          </div>
-          <span className="font-display text-2xl font-black tracking-tighter uppercase">
-            SIP & BITE
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-red text-xs font-semibold tracking-wide text-white">
+            S&B
+          </span>
+          <span className="font-display text-xl font-medium tracking-tight">
+            Sip & Bite
           </span>
         </Link>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
-            <Link
+            <NavLink
               key={link.name}
               to={link.href}
-              className="text-sm font-bold uppercase tracking-wider hover:text-brand-yellow transition-colors"
+              end={link.href === "/"}
+              className={({ isActive }) =>
+                `text-sm font-medium transition-colors ${isActive ? "text-brand-red" : "text-brand-dark/70 hover:text-brand-dark"}`
+              }
             >
               {link.name}
-            </Link>
+            </NavLink>
           ))}
-          {user?.role === 'admin' && (
-            <Link to="/admin" className="text-sm font-bold uppercase tracking-wider hover:text-brand-yellow transition-colors">
+          {user?.role === "admin" && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                `text-sm font-medium transition-colors ${isActive ? "text-brand-red" : "text-brand-dark/70 hover:text-brand-dark"}`
+              }
+            >
               Admin
-            </Link>
+            </NavLink>
           )}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <AuthDialogButton />
             <Cart />
-            <Button className="bg-brand-yellow hover:bg-brand-yellow/90 text-brand-red font-black rounded-full px-8 uppercase" render={<a href="https://wa.me/233537858896" target="_blank" rel="noreferrer">Order Now</a>} />
+            <a
+              href="https://wa.me/233537858896"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-10 items-center rounded-full bg-brand-red px-5 text-sm font-semibold text-white transition hover:bg-brand-red/90"
+            >
+              Order now
+            </a>
           </div>
         </div>
 
-        {/* Mobile Nav */}
-        <div className="md:hidden flex items-center gap-4">
+        <div className="flex items-center gap-2 md:hidden">
           <AuthDialogButton />
           <Cart />
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger render={<Button variant="ghost" size="icon" className="text-white" />}>
-              <Menu className="w-6 h-6" />
+            <SheetTrigger render={<Button variant="ghost" size="icon" className="text-brand-dark" />}>
+              <Menu className="h-6 w-6" />
             </SheetTrigger>
-            <SheetContent side="right" className="bg-brand-red text-white border-none">
+            <SheetContent side="right" className="border-none bg-brand-cream text-brand-dark">
               <SheetHeader>
-                <SheetTitle className="text-white text-2xl font-black uppercase tracking-tighter mb-8 text-left">Navigation</SheetTitle>
+                <SheetTitle className="mb-8 text-left font-display text-3xl font-medium text-brand-dark">Menu</SheetTitle>
               </SheetHeader>
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-5">
                 {navLinks.map((link) => (
                   <Link
                     key={link.name}
                     to={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="text-2xl font-black uppercase tracking-tighter hover:text-brand-yellow transition-colors"
+                    className="font-display text-3xl font-medium tracking-tight"
                   >
                     {link.name}
                   </Link>
                 ))}
-                {user?.role === 'admin' && (
+                {user?.role === "admin" && (
                   <Link
                     to="/admin"
                     onClick={() => setIsOpen(false)}
-                    className="text-2xl font-black uppercase tracking-tighter hover:text-brand-yellow transition-colors"
+                    className="font-display text-3xl font-medium tracking-tight"
                   >
                     Admin
                   </Link>
                 )}
-                <Button className="bg-brand-yellow hover:bg-brand-yellow/90 text-brand-red font-black rounded-full py-8 text-xl uppercase mt-8" render={<a href="https://wa.me/233537858896" target="_blank" rel="noreferrer">Order via WhatsApp</a>} />
+                <a
+                  href="https://wa.me/233537858896"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-6 inline-flex items-center justify-center rounded-full bg-brand-red py-4 text-base font-semibold text-white"
+                >
+                  Order on WhatsApp
+                </a>
               </div>
             </SheetContent>
           </Sheet>

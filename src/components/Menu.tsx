@@ -59,25 +59,28 @@ export default function Menu() {
   };
 
   return (
-    <section id="menu" className="w-full space-y-6">
-      <div className="relative overflow-hidden bg-brand-dark text-white p-8 md:p-12 rounded-[24px] min-h-[280px] flex flex-col justify-center">
-        <img src={chickenImg} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover z-0" />
-        <div className="absolute inset-0 bg-black/50 z-10" />
-        <div className="relative z-20 max-w-3xl">
-          <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-white mb-4">How would you like to order today?</h1>
-          <p className="text-white/90 font-medium mb-6">Browse categories below and add your favorites to the cart.</p>
-          <Button className="bg-brand-red hover:bg-brand-red/90 text-white font-black rounded-full px-8 uppercase" render={<a href="#promotions">Order Now</a>} />
+    <section id="menu" className="w-full pb-20">
+      <div className="bg-brand-dark text-white">
+        <div className="mx-auto grid max-w-6xl items-end gap-8 px-6 py-16 md:grid-cols-[1.2fr_0.8fr]">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-yellow">The menu</p>
+            <h1 className="mt-3 font-display text-5xl font-medium leading-tight md:text-6xl">Order the way you actually eat.</h1>
+          </div>
+          <p className="max-w-md pb-1 text-white/75">Combos, grill plates, snacks, and cold drinks. Pick a category, then open anything to add it.</p>
+        </div>
+        <div className="h-56 overflow-hidden sm:h-72">
+          <img src={chickenImg} alt="" className="h-full w-full object-cover object-center" />
         </div>
       </div>
 
-      <div className="bg-white rounded-[24px] shadow-sm border border-slate-100 p-3 sticky top-24 z-40">
-        <div className="flex gap-2 overflow-x-auto">
+      <div className="sticky top-[72px] z-40 border-b border-black/5 bg-brand-cream/90 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-6 py-3">
           {categories.map((c) => (
             <button
               key={c.key}
               onClick={() => handleNavClick(c.key)}
-              className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-black uppercase tracking-wider transition-colors ${
-                active === c.key ? 'bg-brand-red text-white' : 'bg-slate-100 text-brand-dark hover:bg-slate-200'
+              className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                active === c.key ? 'bg-brand-dark text-white' : 'bg-white text-brand-dark/70 hover:text-brand-dark'
               }`}
             >
               {c.label}
@@ -85,6 +88,8 @@ export default function Menu() {
           ))}
         </div>
       </div>
+
+      <div className="mx-auto max-w-6xl space-y-16 px-6 pt-12">
 
       {categories.map((c) => (
         <MenuCategory
@@ -95,6 +100,7 @@ export default function Menu() {
           isPackage={c.key === 'promotions'}
         />
       ))}
+      </div>
     </section>
   );
 }
@@ -108,17 +114,10 @@ function MenuCategory({ id, title, items, isPackage = false }: { id: string, tit
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
-      className={`p-8 rounded-[24px] shadow-sm border border-slate-100 bg-white scroll-mt-28 ${isPackage ? 'md:col-span-2' : ''}`}
+      className="scroll-mt-32"
     >
-      {isDrinks ? (
-        <h2 className="text-2xl md:text-3xl font-black text-brand-dark uppercase tracking-tighter mb-6">{title}</h2>
-      ) : (
-        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-md mb-6 inline-block bg-brand-red/10 text-brand-red`}>
-          {title}
-        </span>
-      )}
-      
-      <div className={`grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`}>
+      <h2 className="mb-6 font-display text-3xl font-medium text-brand-dark md:text-4xl">{title}</h2>
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {items.map((item) => (
           <MenuItem key={item.id} item={item} isPackage={isPackage} isDrinks={isDrinks} />
         ))}
@@ -142,37 +141,37 @@ interface MenuItemProps {
   isDrinks?: boolean;
 }
 
-function MenuItem({ item, isPackage, isDrinks }: MenuItemProps) {
+function MenuItem({ item, isDrinks }: MenuItemProps) {
   return (
     <motion.div
       whileHover={{ y: -4, scale: 1.02 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20, mass: 0.5 }}
-      className="group relative bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-all"
+      className="group overflow-hidden rounded-[24px] bg-brand-white"
     >
-      <Link to={`/menu/${item.id}`} className="block w-full h-40 sm:h-44 bg-white">
+      <Link to={`/menu/${item.id}`} className={`block w-full overflow-hidden ${isDrinks ? 'h-44 bg-white' : 'h-48'}`}>
         <img
           src={item.image}
           alt={item.name}
-          className={`w-full h-full transform-gpu transition-transform duration-300 ${isDrinks ? 'object-contain p-6' : 'object-cover group-hover:scale-105'}`}
+          className={`h-full w-full transform-gpu transition-transform duration-500 group-hover:scale-105 ${isDrinks ? 'object-contain p-6' : 'object-cover'}`}
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Image';
           }}
         />
       </Link>
-      <Link to={`/menu/${item.id}`} className="block p-4 pb-16">
-        <div className="flex items-center gap-2 mb-1">
-          <h4 className="font-black uppercase tracking-tight text-brand-dark text-sm sm:text-base">{item.name}</h4>
-          {item.popular && <Flame className="w-4 h-4 text-brand-yellow fill-brand-yellow" />}
+      <div className="flex items-start justify-between gap-3 px-4 py-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h3 className="font-display text-xl font-medium leading-tight text-brand-dark">{item.name}</h3>
+            {item.popular && <Flame className="h-4 w-4 fill-brand-yellow text-brand-yellow" />}
+          </div>
+          <p className="mt-1 text-sm font-semibold text-brand-red">GH₵{item.price.toFixed(2)}</p>
         </div>
-        <div className="text-sm font-bold text-slate-500">GH₵{item.price.toFixed(2)}</div>
-      </Link>
-      <Link to={`/menu/${item.id}`} className="absolute left-1/2 -translate-x-1/2 bottom-4">
-        <motion.div whileTap={{ scale: 0.9 }}>
-          <Button size="icon" className="rounded-full size-12 bg-brand-red text-white shadow-lg">
-            <ShoppingCart className="w-5 h-5" />
+        <Link to={`/menu/${item.id}`} aria-label={`Order ${item.name}`}>
+          <Button size="icon" className="size-10 rounded-full bg-brand-dark text-white hover:bg-brand-red">
+            <ShoppingCart className="h-4 w-4" />
           </Button>
-        </motion.div>
-      </Link>
+        </Link>
+      </div>
     </motion.div>
   );
 }

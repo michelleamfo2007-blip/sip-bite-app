@@ -13,8 +13,8 @@ import ResetPassword from "./components/ResetPassword";
 import Admin from "./components/Admin";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import { Leaf, Flame, Truck } from "lucide-react";
+import { BrowserRouter as Router, Routes, Route, useLocation, Link } from "react-router-dom";
+import { Leaf, Flame, Truck, ArrowRight } from "lucide-react";
 import friesImg from "../images/friesss.jpg";
 import chickenImg from "../images/chicken.jpg";
 import kebabImg from "../images/kebahh.webp";
@@ -32,21 +32,6 @@ function ScrollToTop() {
     window.scrollTo(0, 0);
   }, [pathname]);
   return null;
-}
-
-function FeatureCard({ number, title, description }: { number: string, title: string, description: string }) {
-  return (
-    <motion.div 
-      initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      className="relative p-8 rounded-[24px] bg-white shadow-sm border border-slate-100 hover:shadow-md transition-all"
-    >
-      <span className="text-4xl font-black text-brand-red/10 absolute top-4 right-6 select-none">{number}</span>
-      <h4 className="text-xl font-black mb-2 uppercase tracking-tight text-brand-dark">{title}</h4>
-      <p className="text-slate-500 font-medium leading-relaxed text-sm">{description}</p>
-    </motion.div>
-  );
 }
 
 function AnimatedRoutes() {
@@ -75,116 +60,122 @@ function AnimatedRoutes() {
   );
 }
 
+const specials = [
+  { name: "Sweet Chicks Combo", price: "GH₵50", image: sweetChicksImg, note: "Lunch plate" },
+  { name: "Mega Crunch Duo", price: "GH₵75", image: megaCrunchDuoImg, note: "Feeds two" },
+  { name: "Kebab + Fries", price: "GH₵55", image: kebabImg, note: "Grill special" },
+];
+
+const reasons = [
+  { icon: Leaf, title: "Market fresh", text: "Produce picked up from Accra markets the same day it hits the grill." },
+  { icon: Flame, title: "Street spice", text: "The same heat you’d get from a night stall, portioned for the table." },
+  { icon: Truck, title: "Still hot", text: "Packed to travel and handed off across central Accra." },
+];
+
 function HomePage() {
   return (
-    <div className="flex flex-col gap-12">
-      {/* 1. HERO */}
+    <div>
       <Hero />
 
-      {/* 2. FEATURES */}
-      <section className="p-10 rounded-[24px] bg-white shadow-sm border border-slate-100">
-        <div className="mb-8">
-          <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-md mb-4 inline-block bg-brand-red/10 text-brand-red">Why Choose Us</span>
-          <h2 className="text-3xl font-black text-brand-dark uppercase tracking-tighter">Quality • Speed • Flavor</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
-            <div className="w-10 h-10 rounded-xl bg-brand-red/10 flex items-center justify-center mb-3"><Leaf className="text-brand-red w-5 h-5" /></div>
-            <h4 className="font-black uppercase tracking-tight text-brand-dark mb-1">Fresh Ingredients</h4>
-            <p className="text-sm text-slate-600 font-medium">Sourced daily from local Ghanaian markets.</p>
-          </div>
-          <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
-            <div className="w-10 h-10 rounded-xl bg-brand-red/10 flex items-center justify-center mb-3"><Flame className="text-brand-red w-5 h-5" /></div>
-            <h4 className="font-black uppercase tracking-tight text-brand-dark mb-1">Authentic Spices</h4>
-            <p className="text-sm text-slate-600 font-medium">Signature blends inspired by street grills.</p>
-          </div>
-          <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
-            <div className="w-10 h-10 rounded-xl bg-brand-red/10 flex items-center justify-center mb-3"><Truck className="text-brand-red w-5 h-5" /></div>
-            <h4 className="font-black uppercase tracking-tight text-brand-dark mb-1">Fast Delivery</h4>
-            <p className="text-sm text-slate-600 font-medium">Hot and crispy to your door in minutes.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. DAILY SPECIALS */}
-      <section className="p-10 rounded-[24px] bg-white shadow-sm border border-slate-100">
-        <div className="mb-8">
-          <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-md mb-4 inline-block bg-brand-red/10 text-brand-red">Daily Specials</span>
-          <h2 className="text-3xl font-black text-brand-dark uppercase tracking-tighter">Don’t Miss Today’s Deals</h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <img src={sweetChicksImg} alt="Sweet Chicks Combo" className="w-full h-44 object-cover" />
-            <div className="p-4">
-              <h4 className="font-black uppercase tracking-tight text-brand-dark">Sweet Chicks Combo</h4>
-              <p className="text-sm font-bold text-slate-500">GH₵50.00</p>
-            </div>
-          </div>
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <img src={megaCrunchDuoImg} alt="Mega Crunch Duo" className="w-full h-44 object-cover" />
-            <div className="p-4">
-              <h4 className="font-black uppercase tracking-tight text-brand-dark">Mega Crunch Duo</h4>
-              <p className="text-sm font-bold text-slate-500">GH₵75.00</p>
-            </div>
-          </div>
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <img src={kebabImg} alt="Kebab + Fries Deal" className="w-full h-44 object-cover" />
-            <div className="p-4">
-              <h4 className="font-black uppercase tracking-tight text-brand-dark">Kebab + Fries Deal</h4>
-              <p className="text-sm font-bold text-slate-500">GH₵55.00</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. FOOD GALLERY */}
-      <section className="p-10 rounded-[24px] bg-white shadow-sm border border-slate-100">
-        <div className="mb-8">
-          <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-md mb-4 inline-block bg-brand-red/10 text-brand-red">Food Gallery</span>
-          <h2 className="text-3xl font-black text-brand-dark uppercase tracking-tighter">Feast Your Eyes</h2>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {[friesImg, chickenImg, kebabImg, sausageImg, sweetChicksImg, megaCrunchDuoImg, cokeImg, fantaImg, spriteImg, waterImg].map((img, i) => (
-            <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
-              <img src={img} alt="Food" className="w-full h-full object-cover" />
+      <section className="border-b border-black/5">
+        <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-3">
+          {reasons.map((item) => (
+            <div key={item.title} className="flex gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-red/10 text-brand-red">
+                <item.icon className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="font-display text-2xl font-medium text-brand-dark">{item.title}</h2>
+                <p className="mt-1 text-sm leading-relaxed text-brand-dark/65">{item.text}</p>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* 5. ABOUT / OUR STORY (quick) */}
-      <section className="p-10 rounded-[24px] bg-white shadow-sm border border-slate-100">
-        <div className="mb-4">
-          <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-md mb-4 inline-block bg-brand-red/10 text-brand-red">Our Story</span>
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-red">Today’s grill</p>
+            <h2 className="mt-2 font-display text-4xl font-medium text-brand-dark md:text-5xl">Three plates worth opening the menu for.</h2>
+          </div>
+          <Link to="/menu#promotions" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-dark">
+            Full menu <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
-        <h3 className="text-3xl font-black text-brand-dark uppercase tracking-tighter mb-3">Authentic Street Food • Modern Vibes</h3>
-        <p className="text-slate-600 font-medium max-w-3xl">
-          We bring the bold, smoky flavors of Ghanaian street food to Accra with clean, modern service. From crispy chicken to juicy kebabs and golden fries, everything is made fresh and served fast.
-        </p>
+        <div className="grid gap-5 md:grid-cols-3">
+          {specials.map((item, index) => (
+            <Link
+              key={item.name}
+              to="/menu#promotions"
+              className={`group overflow-hidden rounded-[28px] bg-brand-white ${index === 0 ? "md:col-span-2" : ""}`}
+            >
+              <div className={`overflow-hidden ${index === 0 ? "h-80" : "h-56"}`}>
+                <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+              </div>
+              <div className="flex items-end justify-between gap-4 px-5 py-5">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.16em] text-brand-dark/45">{item.note}</p>
+                  <h3 className="mt-1 font-display text-2xl font-medium">{item.name}</h3>
+                </div>
+                <p className="text-sm font-semibold text-brand-red">{item.price}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </section>
 
-      {/* 6. TESTIMONIALS */}
-      <Testimonials />
-
-      {/* 7. PROMO SECTION (bold banner) */}
-      <section className="p-8 bg-brand-red rounded-[24px] overflow-hidden relative min-h-[220px] flex items-center justify-center">
-        <div className="absolute inset-0 opacity-10 flex items-center justify-center pointer-events-none">
-          <div className="text-[10vw] font-black text-white whitespace-nowrap animate-pulse">
-            SIP & BITE • SIP & BITE
+      <section className="bg-brand-white py-20">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 md:grid-cols-2">
+          <div className="grid grid-cols-2 gap-3">
+            <img src={chickenImg} alt="Crispy chicken" className="h-56 w-full rounded-3xl object-cover" />
+            <img src={kebabImg} alt="Kebabs" className="mt-8 h-56 w-full rounded-3xl object-cover" />
+            <img src={sausageImg} alt="Sausage" className="-mt-6 h-40 w-full rounded-3xl object-cover" />
+            <img src={friesImg} alt="Fries" className="h-40 w-full rounded-3xl object-cover" />
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-red">The kitchen</p>
+            <h2 className="mt-3 font-display text-4xl font-medium leading-tight text-brand-dark md:text-5xl">
+              Accra street food, plated without the wait.
+            </h2>
+            <p className="mt-5 max-w-md text-base leading-relaxed text-brand-dark/70">
+              Smoky chicken, juicy kebabs, and fries that stay golden. We cook in small batches so the food that leaves Osu tastes like it just came off the grill.
+            </p>
+            <Link to="/about" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-brand-red">
+              Our story <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
-        <div className="relative z-10 text-center">
-          <h3 className="text-2xl md:text-4xl font-black text-white mb-4 uppercase tracking-tighter">
-            Hungry for more? Get <span className="text-brand-yellow">10% OFF</span>!
-          </h3>
-          <p className="text-white/90 font-bold max-w-xl mx-auto mb-4">
-            Use code <span className="bg-white text-brand-red px-3 py-1 rounded-lg">SIPBITE10</span>
-          </p>
-          <a href="/menu#promotions" className="inline-flex items-center justify-center bg-white text-brand-red font-black rounded-full px-6 py-3 uppercase">Order Now</a>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <div className="mb-8 flex items-end justify-between">
+          <h2 className="font-display text-4xl font-medium">A look at the counter.</h2>
+        </div>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+          {[friesImg, chickenImg, kebabImg, sausageImg, sweetChicksImg, megaCrunchDuoImg, cokeImg, fantaImg, spriteImg, waterImg].map((img, i) => (
+            <div key={i} className="aspect-square overflow-hidden rounded-2xl">
+              <img src={img} alt="" className="h-full w-full object-cover" />
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* 8. CONTACT / LOCATION (final) */}
+      <Testimonials />
+
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <div className="overflow-hidden rounded-[32px] bg-brand-red px-8 py-14 text-white md:px-14">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-yellow">This week</p>
+          <h2 className="mt-3 max-w-xl font-display text-4xl font-medium md:text-6xl">Ten percent off your first order.</h2>
+          <p className="mt-4 text-white/85">
+            Mention <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-brand-red">SIPBITE10</span> when you order.
+          </p>
+          <Link to="/menu#promotions" className="mt-8 inline-flex rounded-full bg-white px-6 py-3 text-sm font-semibold text-brand-red">
+            Order now
+          </Link>
+        </div>
+      </section>
+
       <Contact compact />
     </div>
   );
@@ -203,7 +194,7 @@ export default function App() {
       <AuthProvider>
         <Router>
           <ScrollToTop />
-          <div className="min-h-screen flex flex-col bg-white selection:bg-brand-yellow selection:text-slate-900">
+          <div className="min-h-screen flex flex-col bg-brand-cream text-brand-dark selection:bg-brand-yellow selection:text-brand-dark">
             <motion.div
               className="fixed top-0 left-0 right-0 h-1.5 bg-brand-red z-[60] origin-left"
               style={{ scaleX }}
@@ -211,7 +202,7 @@ export default function App() {
             
             <Navbar />
             
-            <main className="flex-grow container mx-auto px-4 py-6">
+            <main className="flex-grow">
               <AnimatedRoutes />
             </main>
             
