@@ -74,11 +74,11 @@ export default function Navbar() {
             <SheetTrigger render={<Button variant="ghost" size="icon" className="text-brand-dark" />}>
               <Menu className="h-6 w-6" />
             </SheetTrigger>
-            <SheetContent side="right" className="border-none bg-brand-cream text-brand-dark">
-              <SheetHeader>
-                <SheetTitle className="mb-8 text-left font-display text-3xl font-medium text-brand-dark">Menu</SheetTitle>
+            <SheetContent side="right" className="gap-0 border-none bg-brand-cream px-6 pb-8 pt-6 text-brand-dark">
+              <SheetHeader className="p-0 pr-10">
+                <SheetTitle className="text-left font-display text-2xl font-medium text-brand-dark">Sip & Bite</SheetTitle>
               </SheetHeader>
-              <div className="flex flex-col gap-5">
+              <div className="mt-10 flex flex-col gap-5">
                 {navLinks.map((link) => (
                   <Link
                     key={link.name}
@@ -102,7 +102,7 @@ export default function Navbar() {
                   href="https://wa.me/233537858896"
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-6 inline-flex items-center justify-center rounded-full bg-brand-red py-4 text-base font-semibold text-white"
+                  className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-brand-red px-6 py-4 text-base font-semibold text-white"
                 >
                   Order on WhatsApp
                 </a>
