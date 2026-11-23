@@ -63,8 +63,8 @@ export default function Menu() {
       <div className="bg-brand-dark text-white">
         <div className="mx-auto grid max-w-6xl items-end gap-8 px-6 py-16 md:grid-cols-[1.2fr_0.8fr]">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-yellow">The menu</p>
-            <h1 className="mt-3 font-display text-5xl font-medium leading-tight md:text-6xl">Order the way you actually eat.</h1>
+            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-brand-yellow">The menu</p>
+            <h1 className="mt-3 font-display text-5xl font-medium leading-tight md:text-7xl">A short list, cooked to order.</h1>
           </div>
           <p className="max-w-md pb-1 text-white/75">Combos, grill plates, snacks, and cold drinks. Pick a category, then open anything to add it.</p>
         </div>
@@ -79,8 +79,8 @@ export default function Menu() {
             <button
               key={c.key}
               onClick={() => handleNavClick(c.key)}
-              className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                active === c.key ? 'bg-brand-dark text-white' : 'bg-white text-brand-dark/70 hover:text-brand-dark'
+              className={`whitespace-nowrap border px-4 py-2 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${
+                active === c.key ? 'border-brand-dark bg-brand-dark text-brand-cream' : 'border-brand-dark/15 bg-transparent text-brand-dark/60 hover:text-brand-dark'
               }`}
             >
               {c.label}
@@ -146,7 +146,7 @@ function MenuItem({ item, isDrinks }: MenuItemProps) {
     <motion.div
       whileHover={{ y: -4, scale: 1.02 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20, mass: 0.5 }}
-      className="group overflow-hidden rounded-[24px] bg-brand-white"
+      className="group overflow-hidden border border-brand-dark/10 bg-brand-white"
     >
       <Link to={`/menu/${item.id}`} className={`block w-full overflow-hidden ${isDrinks ? 'h-44 bg-white' : 'h-48'}`}>
         <img

@@ -19,15 +19,10 @@ export default function Navbar() {
   const { user } = useAuth();
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-black/5 bg-brand-cream/85 text-brand-dark backdrop-blur-md">
+    <nav className="sticky top-0 z-50 w-full border-b border-brand-dark/10 bg-brand-cream/90 text-brand-dark backdrop-blur-md">
       <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-red text-xs font-semibold tracking-wide text-white">
-            S&B
-          </span>
-          <span className="font-display text-xl font-medium tracking-tight">
-            Sip & Bite
-          </span>
+        <Link to="/" className="font-display text-2xl font-medium tracking-wide">
+          Sip & Bite
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">
@@ -37,7 +32,7 @@ export default function Navbar() {
               to={link.href}
               end={link.href === "/"}
               className={({ isActive }) =>
-                `text-sm font-medium transition-colors ${isActive ? "text-brand-red" : "text-brand-dark/70 hover:text-brand-dark"}`
+                `text-[11px] font-medium uppercase tracking-[0.22em] transition-colors ${isActive ? "text-brand-red" : "text-brand-dark/55 hover:text-brand-dark"}`
               }
             >
               {link.name}
@@ -47,7 +42,7 @@ export default function Navbar() {
             <NavLink
               to="/admin"
               className={({ isActive }) =>
-                `text-sm font-medium transition-colors ${isActive ? "text-brand-red" : "text-brand-dark/70 hover:text-brand-dark"}`
+                `text-[11px] font-medium uppercase tracking-[0.22em] transition-colors ${isActive ? "text-brand-red" : "text-brand-dark/55 hover:text-brand-dark"}`
               }
             >
               Admin
@@ -60,7 +55,7 @@ export default function Navbar() {
               href="https://wa.me/233537858896"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-10 items-center rounded-full bg-brand-red px-5 text-sm font-semibold text-white transition hover:bg-brand-red/90"
+              className="inline-flex h-10 items-center border border-brand-dark px-5 text-[11px] font-medium uppercase tracking-[0.22em] text-brand-dark transition hover:bg-brand-dark hover:text-brand-cream"
             >
               Order now
             </a>
@@ -102,7 +97,7 @@ export default function Navbar() {
                   href="https://wa.me/233537858896"
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-brand-red px-6 py-4 text-base font-semibold text-white"
+                  className="mt-6 inline-flex w-full items-center justify-center border border-brand-dark bg-brand-dark px-6 py-4 text-[11px] font-medium uppercase tracking-[0.22em] text-brand-cream"
                 >
                   Order on WhatsApp
                 </a>

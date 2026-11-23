@@ -1,15 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650;9..144,700&family=Outfit:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Outfit", sans-serif;
-  --font-display: "Fraunces", serif;
+  --font-display: "Cormorant Garamond", serif;
 
-  --color-brand-red: #C81D25;
-  --color-brand-yellow: #E6B325;
-  --color-brand-dark: #161311;
-  --color-brand-cream: #F3EEE6;
-  --color-brand-white: #FFFCF8;
+  --color-brand-red: #6E2C33;
+  --color-brand-yellow: #B8956A;
+  --color-brand-dark: #12100E;
+  --color-brand-cream: #F6F1E7;
+  --color-brand-white: #FBF8F3;
 }
 
 @layer base {
@@ -71,10 +71,10 @@
 }
 
 :root {
-    --background: #F3EEE6;
-    --foreground: #161311;
-    --card: #FFFCF8;
-    --card-foreground: #161311;
+    --background: #F6F1E7;
+    --foreground: #12100E;
+    --card: #FBF8F3;
+    --card-foreground: #12100E;
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
     --primary: oklch(0.205 0 0);

@@ -30,14 +30,14 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  const MAILTRAP_TOKEN = Deno.env.get("MAILTRAP_TOKEN") || "";
+  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "";
   const FROM_NAME = Deno.env.get("FROM_NAME") || "Sip & Bite";
-  const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "no-reply@sipandbite.test";
+  const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "hello@sipandbite.site";
   const REPLY_TO = Deno.env.get("REPLY_TO") || "";
 
-  if (!MAILTRAP_TOKEN) {
+  if (!RESEND_API_KEY) {
     return new Response(
-      JSON.stringify({ status: "skipped", reason: "mailtrap_not_configured" }),
+      JSON.stringify({ status: "skipped", reason: "resend_not_configured" }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   }
@@ -46,21 +46,22 @@ Deno.serve(async (req: Request) => {
   const text = `Hi ${name},\n\nThanks for joining Sip & Bite! We're excited to have you.\n\nYou can now sign in anytime to manage your account and speed up checkout.\n\nCheers,\nSip & Bite`;
   const html = `<!DOCTYPE html><html><body style=\"font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif\"><div style=\"max-width:560px;margin:0 auto;padding:24px\"><h1 style=\"margin:0 0 12px;font-size:22px\">Welcome to Sip & Bite</h1><p style=\"margin:0 0 16px\">Hi ${name},</p><p style=\"margin:0 0 16px\">Thanks for joining <strong>Sip & Bite</strong>! We're excited to have you.</p><p style=\"margin:0 0 16px\">You can now sign in anytime to manage your account and speed up checkout.</p><p style=\"margin:24px 0 0;color:#64748b;font-size:12px\">Cheers,<br/>Sip & Bite</p></div></body></html>`;
 
+  const from = FROM_EMAIL.includes("<") ? FROM_EMAIL : `${FROM_NAME} <${FROM_EMAIL}>`;
   const body: Record<string, unknown> = {
-    from: { email: FROM_EMAIL, name: FROM_NAME },
-    to: [{ email: recipient, name }],
+    from,
+    to: [recipient],
     subject,
     text,
     html,
   };
   if (REPLY_TO) {
-    body.headers = { "Reply-To": REPLY_TO };
+    body.reply_to = REPLY_TO;
   }
 
-  const resp = await fetch("https://sandbox.api.mailtrap.io/api/send", {
+  const resp = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${MAILTRAP_TOKEN}`,
+      Authorization: `Bearer ${RESEND_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),

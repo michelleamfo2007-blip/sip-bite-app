@@ -21,6 +21,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const STORAGE_KEY = "auth:user";
 
+async function sendWelcome(name: string, email: string) {
+  await fetch("/api/send-welcome-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, to: email }),
+  });
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
@@ -137,7 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data.user?.email && data.session) {
         setUser({ name, email: data.user.email });
       }
-      try { await supabase.functions.invoke("send-welcome-email", { body: { name, to: email } }); } catch {}
+      try { await sendWelcome(name, email); } catch {}
       return;
     }
     // Fallback demo
@@ -162,11 +170,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const sendWelcomeEmail = async (name: string, email: string) => {
-    if (!supabase) return;
     try {
-      await supabase.functions.invoke("send-welcome-email", {
-        body: { name, to: email },
-      });
+      await sendWelcome(name, email);
     } catch {}
   };
 

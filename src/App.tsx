@@ -14,7 +14,7 @@ import Admin from "./components/Admin";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter as Router, Routes, Route, useLocation, Link } from "react-router-dom";
-import { Leaf, Flame, Truck, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import friesImg from "../images/friesss.jpg";
 import chickenImg from "../images/chicken.jpg";
 import kebabImg from "../images/kebahh.webp";
@@ -67,9 +67,9 @@ const specials = [
 ];
 
 const reasons = [
-  { icon: Leaf, title: "Market fresh", text: "Produce picked up from Accra markets the same day it hits the grill." },
-  { icon: Flame, title: "Street spice", text: "The same heat you’d get from a night stall, portioned for the table." },
-  { icon: Truck, title: "Still hot", text: "Packed to travel and handed off across central Accra." },
+  { title: "Market fresh", text: "Produce picked up from Accra markets the same day it hits the grill." },
+  { title: "House spice", text: "The heat of a night stall, plated with a little more care." },
+  { title: "Sent hot", text: "Packed to travel and handed across central Accra." },
 ];
 
 function HomePage() {
@@ -80,14 +80,10 @@ function HomePage() {
       <section className="border-b border-black/5">
         <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-3">
           {reasons.map((item) => (
-            <div key={item.title} className="flex gap-4">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-red/10 text-brand-red">
-                <item.icon className="h-5 w-5" />
-              </div>
-              <div>
-                <h2 className="font-display text-2xl font-medium text-brand-dark">{item.title}</h2>
-                <p className="mt-1 text-sm leading-relaxed text-brand-dark/65">{item.text}</p>
-              </div>
+            <div key={item.title} className="border-t border-brand-dark/10 pt-6">
+              <p className="text-[11px] uppercase tracking-[0.28em] text-brand-yellow">0{reasons.indexOf(item) + 1}</p>
+              <h2 className="mt-3 font-display text-3xl font-medium text-brand-dark">{item.title}</h2>
+              <p className="mt-3 text-sm font-light leading-relaxed text-brand-dark/65">{item.text}</p>
             </div>
           ))}
         </div>
@@ -96,8 +92,8 @@ function HomePage() {
       <section className="mx-auto max-w-6xl px-6 py-20">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-red">Today’s grill</p>
-            <h2 className="mt-2 font-display text-4xl font-medium text-brand-dark md:text-5xl">Three plates worth opening the menu for.</h2>
+            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-brand-yellow">The house plates</p>
+            <h2 className="mt-3 font-display text-5xl font-medium text-brand-dark md:text-6xl">Three plates, chosen for tonight.</h2>
           </div>
           <Link to="/menu#promotions" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-dark">
             Full menu <ArrowRight className="h-4 w-4" />
@@ -108,7 +104,7 @@ function HomePage() {
             <Link
               key={item.name}
               to="/menu#promotions"
-              className={`group overflow-hidden rounded-[28px] bg-brand-white ${index === 0 ? "md:col-span-2" : ""}`}
+              className={`group overflow-hidden border border-brand-dark/10 bg-brand-white ${index === 0 ? "md:col-span-2" : ""}`}
             >
               <div className={`overflow-hidden ${index === 0 ? "h-80" : "h-56"}`}>
                 <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
@@ -164,13 +160,13 @@ function HomePage() {
       <Testimonials />
 
       <section className="mx-auto max-w-6xl px-6 py-20">
-        <div className="overflow-hidden rounded-[32px] bg-brand-red px-8 py-14 text-white md:px-14">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-yellow">This week</p>
-          <h2 className="mt-3 max-w-xl font-display text-4xl font-medium md:text-6xl">Ten percent off your first order.</h2>
-          <p className="mt-4 text-white/85">
-            Mention <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-brand-red">SIPBITE10</span> when you order.
+        <div className="border border-brand-yellow/40 bg-brand-dark px-8 py-16 text-brand-cream md:px-14">
+          <p className="text-[11px] uppercase tracking-[0.32em] text-brand-yellow">A courtesy</p>
+          <h2 className="mt-4 max-w-xl font-display text-5xl font-medium md:text-6xl">Ten percent off the first order.</h2>
+          <p className="mt-5 text-sm font-light tracking-wide text-white/70">
+            Mention <span className="text-brand-yellow">SIPBITE10</span> when you write to us.
           </p>
-          <Link to="/menu#promotions" className="mt-8 inline-flex rounded-full bg-white px-6 py-3 text-sm font-semibold text-brand-red">
+          <Link to="/menu#promotions" className="mt-8 inline-flex border border-brand-yellow px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-brand-yellow">
             Order now
           </Link>
         </div>
@@ -196,7 +192,7 @@ export default function App() {
           <ScrollToTop />
           <div className="min-h-screen flex flex-col bg-brand-cream text-brand-dark selection:bg-brand-yellow selection:text-brand-dark">
             <motion.div
-              className="fixed top-0 left-0 right-0 h-1.5 bg-brand-red z-[60] origin-left"
+              className="fixed top-0 left-0 right-0 h-px bg-brand-yellow z-[60] origin-left"
               style={{ scaleX }}
             />
             
