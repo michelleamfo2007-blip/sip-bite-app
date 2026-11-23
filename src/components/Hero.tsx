@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import friesImg from "../../images/friesss.jpg";
-import chickenImg from "../../images/chicken.jpg";
-import kebabImg from "../../images/kebahh.webp";
+import friesImg from "../../images/menu/fries.jpg";
+import chickenImg from "../../images/menu/chicken-3.jpg";
+import sausageImg from "../../images/menu/sausage-kebab.jpg";
 
 export default function Hero() {
   return (
@@ -9,13 +9,13 @@ export default function Hero() {
       <div className="mx-auto grid min-h-[calc(100vh-72px)] max-w-6xl items-center gap-14 px-6 py-16 md:grid-cols-[1.05fr_0.95fr] md:py-20">
         <div>
           <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-brand-yellow">
-            Osu · Accra
+            Achimota · Accra
           </p>
           <h1 className="mt-6 max-w-xl font-display text-6xl font-medium leading-[0.92] sm:text-7xl lg:text-8xl">
             Chicken, kebabs, and <span className="italic text-brand-red">the quiet luxury</span> of a hot plate.
           </h1>
           <p className="mt-8 max-w-md text-base font-light leading-relaxed text-brand-dark/70">
-            Grilled to order in Osu. Served from ten until eleven, and sent across Accra while it is still hot.
+            Grilled to order in Achimota. Served from ten until eleven, and sent across Accra while it is still hot.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-6">
             <Link
@@ -42,7 +42,7 @@ export default function Hero() {
             </div>
             <div>
               <dt className="text-brand-yellow">House</dt>
-              <dd className="mt-2 text-brand-dark">Osu</dd>
+              <dd className="mt-2 text-brand-dark">Achimota</dd>
             </div>
           </dl>
         </div>
@@ -52,7 +52,7 @@ export default function Hero() {
             <img src={chickenImg} alt="Crispy fried chicken" className="h-full w-full object-cover" />
           </figure>
           <figure className="overflow-hidden border border-brand-yellow/50">
-            <img src={kebabImg} alt="Grilled kebabs" className="h-full w-full object-cover" />
+            <img src={sausageImg} alt="Sausage kebab" className="h-full w-full object-cover" />
           </figure>
           <figure className="overflow-hidden border border-brand-yellow/50">
             <img src={friesImg} alt="Golden fries" className="h-full w-full object-cover" />

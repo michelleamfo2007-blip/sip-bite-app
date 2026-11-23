@@ -7,12 +7,12 @@ export default function Footer() {
         <div className="md:col-span-2">
           <p className="font-display text-4xl font-medium">Sip & Bite</p>
           <p className="mt-4 max-w-sm text-sm font-light leading-relaxed text-white/60">
-            A small grill house in Osu. Chicken, kebabs, and fries, finished to order.
+            A small grill house in Achimota. Chicken, kebabs, and fries, finished to order.
           </p>
         </div>
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-yellow">Visit</p>
-          <p className="mt-3 text-sm text-white/75">Osu, Accra, Ghana</p>
+          <p className="mt-3 text-sm text-white/75">Achimota, Accra, Ghana</p>
           <a href="tel:0537858896" className="mt-1 block text-sm text-white/75 hover:text-white">
             053 785 8896
           </a>

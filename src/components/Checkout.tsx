@@ -4,26 +4,59 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import React, { useState } from "react";
+import { placeOrder } from "@/lib/orders";
+import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { ArrowLeft, CreditCard, Truck, Store, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Truck, Store, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Checkout() {
   const { cart, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
   const [step, setStep] = useState(1);
-  const [orderType, setOrderType] = useState("delivery");
+  const [orderType, setOrderType] = useState<"delivery" | "pickup">("delivery");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [name, setName] = useState(user?.name || "");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [orderError, setOrderError] = useState("");
+  const [orderId, setOrderId] = useState("");
+
+  useEffect(() => {
+    if (user?.name) setName((current) => current || user.name);
+  }, [user]);
+
+  const deliveryFee = orderType === "delivery" ? 10 : 0;
+  const total = totalPrice + deliveryFee;
 
   const handleOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+    setOrderError("");
     setIsProcessing(true);
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsProcessing(false);
-    setStep(3);
-    clearCart();
+    try {
+      const id = await placeOrder({
+        customer_name: name.trim(),
+        phone: phone.trim(),
+        order_type: orderType,
+        address: orderType === "delivery" ? address.trim() : null,
+        items: cart.map((item) => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          customization: item.customization || null,
+        })),
+        subtotal: totalPrice,
+        delivery_fee: deliveryFee,
+        total,
+      });
+      setOrderId(id.slice(0, 8).toUpperCase());
+      setStep(3);
+      clearCart();
+    } catch (err: any) {
+      setOrderError(err?.message || "The order could not be saved.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   if (step === 3) {
@@ -38,9 +71,10 @@ export default function Checkout() {
             <CheckCircle2 className="text-green-500 w-10 h-10" />
           </div>
           <h2 className="text-4xl font-black text-brand-dark uppercase tracking-tighter mb-4">Order Confirmed!</h2>
-          <p className="text-slate-500 font-medium mb-8">
-            Thank you for your order. We've received it and our chefs are already firing up the grill!
+          <p className="text-slate-500 font-medium mb-2">
+            Sip & Bite has the order. The kitchen can see it on the admin page.
           </p>
+          {orderId && <p className="mb-8 text-sm font-black tracking-[0.2em] text-brand-dark">ORDER {orderId}</p>}
           <Button className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-6 rounded-xl uppercase" render={<Link to="/">Back to Home</Link>} />
         </motion.div>
       </div>
@@ -62,7 +96,7 @@ export default function Checkout() {
               <span className="bg-brand-red text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
               Order Type
             </h2>
-            <RadioGroup defaultValue={orderType} onValueChange={setOrderType} className="grid grid-cols-2 gap-4">
+            <RadioGroup defaultValue={orderType} onValueChange={(value) => setOrderType(value as "delivery" | "pickup")} className="grid grid-cols-2 gap-4">
               <div className="flex items-center space-x-2 bg-slate-50 p-6 rounded-2xl border-2 border-transparent has-[:checked]:border-brand-red transition-all cursor-pointer">
                 <RadioGroupItem value="delivery" id="delivery" className="text-brand-red" />
                 <Label htmlFor="delivery" className="font-bold cursor-pointer flex items-center gap-2">
@@ -87,17 +121,17 @@ export default function Checkout() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Full Name</Label>
-                  <Input id="name" required className="rounded-xl border-slate-200 h-12" placeholder="John Doe" defaultValue={user?.name || ""} />
+                  <Input id="name" required className="rounded-xl border-slate-200 h-12" placeholder="Ama Mensah" value={name} onChange={(e) => setName(e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Phone Number</Label>
-                  <Input id="phone" required className="rounded-xl border-slate-200 h-12" placeholder="+233..." />
+                  <Input id="phone" required className="rounded-xl border-slate-200 h-12" placeholder="053..." value={phone} onChange={(e) => setPhone(e.target.value)} />
                 </div>
               </div>
               {orderType === "delivery" && (
                 <div className="space-y-2">
                   <Label htmlFor="address" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Delivery Address</Label>
-                  <Input id="address" required className="rounded-xl border-slate-200 h-12" placeholder="Street name, Area, Accra" />
+                  <Input id="address" required className="rounded-xl border-slate-200 h-12" placeholder="Street name, Achimota, Accra" value={address} onChange={(e) => setAddress(e.target.value)} />
                 </div>
               )}
               
@@ -106,20 +140,17 @@ export default function Checkout() {
                   <span className="bg-brand-red text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span>
                   Payment
                 </h2>
-                <div className="bg-slate-50 p-6 rounded-2xl border-2 border-brand-red flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <CreditCard className="text-brand-red w-6 h-6" />
-                    <span className="font-bold">Pay with Card / Mobile Money</span>
-                  </div>
-                  <span className="text-[10px] font-black bg-brand-red text-white px-2 py-1 rounded">SECURE</span>
+                <div className="bg-slate-50 p-6 rounded-2xl border-2 border-brand-red mb-6">
+                  <p className="font-bold text-brand-dark">Pay on delivery or pickup</p>
+                  <p className="mt-1 text-sm text-slate-500">Placing the order sends it to the kitchen. No card is charged on this page.</p>
                 </div>
-                
+                {orderError && <p className="mb-4 text-sm font-bold text-red-600">{orderError}</p>}
                 <Button 
                   type="submit" 
                   disabled={isProcessing || cart.length === 0}
                   className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-8 rounded-2xl text-xl uppercase shadow-xl shadow-brand-red/20"
                 >
-                  {isProcessing ? "Processing..." : `Pay GH₵ ${totalPrice + (orderType === "delivery" ? 10 : 0)}`}
+                  {isProcessing ? "Sending..." : `Place order · GH₵ ${total}`}
                 </Button>
               </div>
             </form>
@@ -148,11 +179,11 @@ export default function Checkout() {
               </div>
               <div className="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-widest">
                 <span>{orderType === "delivery" ? "Delivery" : "Pickup"}</span>
-                <span>GH₵ {orderType === "delivery" ? 10 : 0}</span>
+                <span>GH₵ {deliveryFee}</span>
               </div>
               <div className="flex justify-between text-xl font-black text-brand-dark uppercase tracking-tighter pt-2">
                 <span>Total</span>
-                <span className="text-brand-red">GH₵ {totalPrice + (orderType === "delivery" ? 10 : 0)}</span>
+                <span className="text-brand-red">GH₵ {total}</span>
               </div>
             </div>
           </div>

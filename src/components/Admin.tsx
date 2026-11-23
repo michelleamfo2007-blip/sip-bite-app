@@ -3,6 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { HouseOrder, OrderStatus, listOrders, orderStatuses, updateOrderStatus } from "@/lib/orders";
 
 interface Profile {
   id: string;
@@ -12,109 +13,209 @@ interface Profile {
   created_at?: string | null;
 }
 
+const statusLabel: Record<OrderStatus, string> = {
+  new: "New",
+  preparing: "Preparing",
+  ready: "Ready",
+  done: "Done",
+};
+
 export default function Admin() {
   const { user } = useAuth();
+  const [orders, setOrders] = useState<HouseOrder[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [filter, setFilter] = useState<OrderStatus | "all">("all");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState("");
+
+  const load = async () => {
+    if (!supabase || !user || user.role !== "admin") return;
+    try {
+      setLoading(true);
+      setError("");
+      const [orderRows, profileResult] = await Promise.all([
+        listOrders(),
+        supabase.from("profiles").select("id, name, email, role, created_at").order("created_at", { ascending: false }),
+      ]);
+      setOrders(orderRows);
+      if (profileResult.error) throw profileResult.error;
+      setProfiles(profileResult.data || []);
+    } catch (err: any) {
+      setError(err?.message || "Could not load the dashboard.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!supabase) return;
-    if (!user || user.role !== "admin") return;
-    const run = async () => {
-      try {
-        setLoading(true);
-        setError("");
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("id, name, email, role, created_at")
-          .order("created_at", { ascending: false });
-        if (error) throw error;
-        setProfiles(data || []);
-      } catch (err: any) {
-        setError(err?.message || "Failed to load profiles");
-      } finally {
-        setLoading(false);
-      }
-    };
-    run();
+    load();
   }, [user]);
+
+  const setStatus = async (id: string, status: OrderStatus) => {
+    const previous = orders;
+    setOrders((current) => current.map((order) => (order.id === id ? { ...order, status } : order)));
+    try {
+      await updateOrderStatus(id, status);
+    } catch (err: any) {
+      setOrders(previous);
+      setError(err?.message || "Could not update that order.");
+    }
+  };
 
   if (!supabase) {
     return (
-      <div className="min-h-[600px] flex items-center justify-center">
-        <div className="bg-white p-10 rounded-[24px] shadow-sm border border-slate-100 text-center">
-          <h1 className="text-3xl font-black text-brand-dark uppercase tracking-tighter mb-2">Admin</h1>
-          <p className="text-slate-600">Backend not configured. Add Supabase keys to .env.local to use the admin panel.</p>
-        </div>
+      <div className="mx-auto max-w-3xl px-6 py-20">
+        <p className="text-[11px] uppercase tracking-[0.32em] text-brand-yellow">Kitchen</p>
+        <h1 className="mt-3 font-display text-5xl font-medium">Orders</h1>
+        <p className="mt-4 max-w-lg text-brand-dark/70">
+          The dashboard needs the Supabase database connected. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY, then run supabase/orders.sql.
+        </p>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-[600px] flex items-center justify-center">
-        <div className="bg-white p-10 rounded-[24px] shadow-sm border border-slate-100 text-center">
-          <h1 className="text-3xl font-black text-brand-dark uppercase tracking-tighter mb-4">Please Sign In</h1>
-          <Button className="bg-brand-red text-white" render={<Link to="/">Go Home</Link>} />
-        </div>
+      <div className="mx-auto max-w-3xl px-6 py-20">
+        <p className="text-[11px] uppercase tracking-[0.32em] text-brand-yellow">Kitchen</p>
+        <h1 className="mt-3 font-display text-5xl font-medium">Sign in to see orders</h1>
+        <p className="mt-4 text-brand-dark/70">Use the account whose profile role is admin.</p>
+        <Button className="mt-8 bg-brand-dark text-brand-cream" render={<Link to="/">Back home</Link>} />
       </div>
     );
   }
 
   if (user.role !== "admin") {
     return (
-      <div className="min-h-[600px] flex items-center justify-center">
-        <div className="bg-white p-10 rounded-[24px] shadow-sm border border-slate-100 text-center">
-          <h1 className="text-3xl font-black text-brand-dark uppercase tracking-tighter mb-2">403</h1>
-          <p className="text-slate-600">You don’t have permission to view this page.</p>
-        </div>
+      <div className="mx-auto max-w-3xl px-6 py-20">
+        <p className="text-[11px] uppercase tracking-[0.32em] text-brand-yellow">Kitchen</p>
+        <h1 className="mt-3 font-display text-5xl font-medium">This account cannot open the kitchen.</h1>
+        <p className="mt-4 max-w-lg text-brand-dark/70">
+          In Supabase, set this account’s role to admin: update profiles set role = 'admin' where email = '{user.email}'.
+        </p>
       </div>
     );
   }
 
+  const visible = filter === "all" ? orders : orders.filter((order) => order.status === filter);
+  const newCount = orders.filter((order) => order.status === "new").length;
+
   return (
-    <div className="mx-auto max-w-5xl px-6 py-12">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-4xl font-black text-brand-dark uppercase tracking-tighter">Admin Dashboard</h1>
+    <div className="mx-auto max-w-6xl px-6 py-16">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.32em] text-brand-yellow">Kitchen</p>
+          <h1 className="mt-3 font-display text-6xl font-medium">Orders</h1>
+          <p className="mt-3 text-sm text-brand-dark/60">
+            {newCount === 0 ? "No new plates waiting." : `${newCount} new ${newCount === 1 ? "order" : "orders"}.`}
+          </p>
+        </div>
         <Button variant="outline" render={<Link to="/">Back</Link>} />
       </div>
 
-      <div className="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100">
-        <h2 className="text-xl font-black uppercase tracking-widest mb-4">Customers</h2>
-        {error && <p className="text-red-600 text-sm font-bold mb-4">{error}</p>}
-        {loading ? (
-          <p className="text-slate-600">Loading...</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
-              <thead>
-                <tr className="text-left text-slate-500 uppercase text-[10px] tracking-widest">
-                  <th className="py-2 pr-4">Name</th>
-                  <th className="py-2 pr-4">Email</th>
-                  <th className="py-2 pr-4">Role</th>
-                  <th className="py-2 pr-4">Joined</th>
-                </tr>
-              </thead>
-              <tbody>
-                {profiles.map((p) => (
-                  <tr key={p.id} className="border-t">
-                    <td className="py-3 pr-4 font-bold text-brand-dark">{p.name || "—"}</td>
-                    <td className="py-3 pr-4">{p.email}</td>
-                    <td className="py-3 pr-4">{p.role || "customer"}</td>
-                    <td className="py-3 pr-4">{p.created_at ? new Date(p.created_at).toLocaleString() : "—"}</td>
-                  </tr>
-                ))}
-                {profiles.length === 0 && (
-                  <tr>
-                    <td className="py-6 text-slate-600" colSpan={4}>No customers yet.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+      <div className="mt-8 flex flex-wrap gap-2">
+        {(["all", ...orderStatuses] as const).map((key) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setFilter(key)}
+            className={`border px-4 py-2 text-[11px] uppercase tracking-[0.18em] ${
+              filter === key ? "border-brand-dark bg-brand-dark text-brand-cream" : "border-brand-dark/15 text-brand-dark/60"
+            }`}
+          >
+            {key === "all" ? "All" : statusLabel[key]}
+          </button>
+        ))}
+      </div>
+
+      {error && <p className="mt-6 text-sm font-semibold text-brand-red">{error}</p>}
+
+      <div className="mt-8 space-y-4">
+        {loading && <p className="text-brand-dark/60">Loading orders...</p>}
+        {!loading && visible.length === 0 && (
+          <div className="border border-brand-dark/10 bg-brand-white px-6 py-10">
+            <p className="font-display text-3xl">Nothing in this list.</p>
+            <p className="mt-2 text-sm text-brand-dark/60">A checkout will appear here as soon as it is placed.</p>
           </div>
         )}
+        {visible.map((order) => (
+          <article key={order.id} className="border border-brand-dark/10 bg-brand-white p-6">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.22em] text-brand-yellow">
+                  {order.id.slice(0, 8).toUpperCase()} · {new Date(order.created_at).toLocaleString()}
+                </p>
+                <h2 className="mt-2 font-display text-3xl font-medium">{order.customer_name}</h2>
+                <p className="mt-1 text-sm text-brand-dark/70">
+                  <a href={`tel:${order.phone}`} className="underline decoration-brand-yellow underline-offset-4">{order.phone}</a>
+                  {" · "}
+                  {order.order_type === "delivery" ? "Delivery" : "Pickup"}
+                  {order.address ? ` · ${order.address}` : ""}
+                </p>
+              </div>
+              <p className="font-display text-3xl text-brand-red">GH₵ {order.total}</p>
+            </div>
+            <ul className="mt-5 space-y-1 text-sm">
+              {order.items.map((item, index) => (
+                <li key={`${item.name}-${index}`} className="flex justify-between gap-4">
+                  <span>
+                    {item.quantity}× {item.name}
+                    {item.customization ? <span className="text-brand-dark/45"> · {item.customization}</span> : null}
+                  </span>
+                  <span>GH₵ {item.price * item.quantity}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {orderStatuses.map((status) => (
+                <button
+                  key={status}
+                  type="button"
+                  onClick={() => setStatus(order.id, status)}
+                  className={`border px-3 py-2 text-[11px] uppercase tracking-[0.16em] ${
+                    order.status === status
+                      ? "border-brand-dark bg-brand-dark text-brand-cream"
+                      : "border-brand-dark/15 text-brand-dark/55"
+                  }`}
+                >
+                  {statusLabel[status]}
+                </button>
+              ))}
+            </div>
+          </article>
+        ))}
       </div>
+
+      <section className="mt-16 border border-brand-dark/10 bg-brand-white p-6">
+        <h2 className="font-display text-3xl font-medium">Accounts</h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="min-w-full text-sm">
+            <thead>
+              <tr className="text-left text-[11px] uppercase tracking-[0.16em] text-brand-dark/45">
+                <th className="py-2 pr-4">Name</th>
+                <th className="py-2 pr-4">Email</th>
+                <th className="py-2 pr-4">Role</th>
+                <th className="py-2 pr-4">Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              {profiles.map((profile) => (
+                <tr key={profile.id} className="border-t border-brand-dark/10">
+                  <td className="py-3 pr-4">{profile.name || "—"}</td>
+                  <td className="py-3 pr-4">{profile.email}</td>
+                  <td className="py-3 pr-4">{profile.role || "customer"}</td>
+                  <td className="py-3 pr-4">{profile.created_at ? new Date(profile.created_at).toLocaleString() : "—"}</td>
+                </tr>
+              ))}
+              {profiles.length === 0 && (
+                <tr>
+                  <td className="py-6 text-brand-dark/60" colSpan={4}>No accounts yet.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
   );
 }

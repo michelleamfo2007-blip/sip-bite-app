@@ -1,36 +1,45 @@
-import friesImg from "../../images/friesss.jpg";
-import kebabImg from "../../images/kebahh.webp";
-import chickenImg from "../../images/chicken.jpg";
-import sausageImg from "../../images/sasuage.webp";
-import sweetChicksImg from "../../images/sweet chickss.jpg";
-import cokeImg from "../../images/coke.jpeg";
-import fantaImg from "../../images/fanta.jpeg";
-import spriteImg from "../../images/sprite.jpeg";
-import waterImg from "../../images/water.jpeg";
-import megaCrunchDuoImg from "../../images/Mega Crunch Duo.jpg";
-import samosaImg from "../../images/samosa.webp";
-import springRollImg from "../../images/spring roll.webp";
-import pineappleImg from "../../images/pineapple.webp";
+import friesImg from "../../images/menu/fries.jpg";
+import chicken3Img from "../../images/menu/chicken-3.jpg";
+import chicken5Img from "../../images/menu/chicken-5.jpg";
+import sausageImg from "../../images/menu/sausage-kebab.jpg";
+import samosaImg from "../../images/menu/samosa-3.jpg";
+import springRollImg from "../../images/menu/springroll-3.jpg";
+import fries2ChickenImg from "../../images/menu/fries-2-chicken.jpg";
+import fries3ChickenDrinkImg from "../../images/menu/fries-3-chicken-drink.jpg";
+import samosaChickenDrinkImg from "../../images/menu/samosa-chicken-drink.jpg";
+import springrollChickenDrinkImg from "../../images/menu/springroll-chicken-drink.jpg";
+import fantaImg from "../../images/menu/drink-fanta.jpg";
+import cokeImg from "../../images/menu/drink-coke.jpg";
+import spriteImg from "../../images/menu/drink-sprite.jpg";
+import juiceImg from "../../images/menu/drink-juice.jpg";
+
+const drinkOptions = ["Coke", "Fanta", "Sprite", "Juice"];
+
 export const menuData = {
   drinks: [
-    { id: 'd1', name: "Coca Cola 300ML", price: 10, image: cokeImg },
-    { id: 'd2', name: "Fanta 300ML", price: 10, image: fantaImg },
-    { id: 'd3', name: "Sprite 300ML", price: 10, image: spriteImg },
-    { id: 'd4', name: "Water 500ML", price: 5, image: waterImg },
-    { id: 'd5', name: "Natural Pineapple Juice", price: 10, image: pineappleImg },
+    { id: "d2", name: "Fanta", price: 15, image: fantaImg },
+    { id: "d1", name: "Coca Cola", price: 15, image: cokeImg },
+    { id: "d3", name: "Sprite", price: 15, image: spriteImg },
+    { id: "d5", name: "Juice", price: 10, image: juiceImg },
   ],
-  regular: [
-    { id: 'r2', name: "Goat Kebab", price: 20, description: "Spiced grilled goat meat skewers", image: kebabImg, popular: true },
-    { id: 'r3', name: "Sausage Kebab", price: 20, description: "Grilled beef sausages with spices", image: sausageImg },
-    { id: 'r4', name: "Fries", price: 35, description: "Golden crispy potato fries", image: friesImg },
-    { id: 'r5', name: "Chicken (3 pieces)", price: 40, description: "Crispy deep-fried chicken pieces", image: chickenImg, popular: true },
+  kebab: [
+    { id: "r3", name: "Sausage Kebab", price: 20, description: "Grilled beef sausage with spices", image: sausageImg },
+  ],
+  fries: [
+    { id: "r4", name: "Fries", price: 40, description: "Golden crispy potato fries", image: friesImg },
+  ],
+  chicken: [
+    { id: "r5", name: "Chicken, 3 pieces", price: 50, description: "Three pieces of crispy fried chicken", image: chicken3Img, popular: true },
+    { id: "r6", name: "Chicken, 5 pieces", price: 80, description: "Five pieces of crispy fried chicken", image: chicken5Img },
   ],
   snacks: [
-    { id: 's1', name: "Samosa", price: 10, description: "Fried pastry with savory filling", image: samosaImg },
-    { id: 's2', name: "Spring Rolls", price: 10, description: "Crispy rolls with vegetable filling", image: springRollImg },
+    { id: "s1", name: "Samosa, 3 pieces", price: 25, description: "Three fried pastries with a savory filling", image: samosaImg },
+    { id: "s2", name: "Spring rolls, 3 pieces", price: 25, description: "Three crispy rolls", image: springRollImg },
   ],
   packages: [
-    { id: 'p1', name: "Sweet Chicks", price: 50, description: "Fries + 2 chicken pieces", image: sweetChicksImg, tag: "Best Value" },
-    { id: 'p2', name: "Mega Crunch Duo", price: 75, description: "Fries + 3 chicken pieces + drink", image: megaCrunchDuoImg, tag: "Family Favorite", options: ["Coke", "Fanta", "Sprite", "Water"] },
-  ]
+    { id: "p1", name: "Fries + 2 chicken pieces", price: 50, description: "Fries with two pieces of chicken", image: fries2ChickenImg, tag: "Combo" },
+    { id: "p2", name: "Fries, 3 chicken & drink", price: 80, description: "Fries, three chicken pieces, and a drink", image: fries3ChickenDrinkImg, tag: "Combo", options: drinkOptions },
+    { id: "p3", name: "Samosas, chicken & drink", price: 50, description: "Samosas, one piece of chicken, and a drink", image: samosaChickenDrinkImg, tag: "Combo", options: drinkOptions },
+    { id: "p4", name: "Spring rolls, chicken & drink", price: 50, description: "Spring rolls, one piece of chicken, and a drink", image: springrollChickenDrinkImg, tag: "Combo", options: drinkOptions },
+  ],
 };

@@ -15,16 +15,14 @@ import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter as Router, Routes, Route, useLocation, Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import friesImg from "../images/friesss.jpg";
-import chickenImg from "../images/chicken.jpg";
-import kebabImg from "../images/kebahh.webp";
-import sausageImg from "../images/sasuage.webp";
-import sweetChicksImg from "../images/sweet chickss.jpg";
-import megaCrunchDuoImg from "../images/Mega Crunch Duo.jpg";
-import cokeImg from "../images/coke.jpeg";
-import fantaImg from "../images/fanta.jpeg";
-import spriteImg from "../images/sprite.jpeg";
-import waterImg from "../images/water.jpeg";
+import friesImg from "../images/menu/fries.jpg";
+import chickenImg from "../images/menu/chicken-3.jpg";
+import sausageImg from "../images/menu/sausage-kebab.jpg";
+import fries2ChickenImg from "../images/menu/fries-2-chicken.jpg";
+import fries3ChickenDrinkImg from "../images/menu/fries-3-chicken-drink.jpg";
+import samosaChickenDrinkImg from "../images/menu/samosa-chicken-drink.jpg";
+import springrollChickenDrinkImg from "../images/menu/springroll-chicken-drink.jpg";
+import samosaImg from "../images/menu/samosa-3.jpg";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -61,9 +59,10 @@ function AnimatedRoutes() {
 }
 
 const specials = [
-  { name: "Sweet Chicks Combo", price: "GH₵50", image: sweetChicksImg, note: "Lunch plate" },
-  { name: "Mega Crunch Duo", price: "GH₵75", image: megaCrunchDuoImg, note: "Feeds two" },
-  { name: "Kebab + Fries", price: "GH₵55", image: kebabImg, note: "Grill special" },
+  { name: "Fries + 2 chicken pieces", price: "GH₵50", image: fries2ChickenImg, note: "Combo" },
+  { name: "Fries, 3 chicken & drink", price: "GH₵80", image: fries3ChickenDrinkImg, note: "Combo" },
+  { name: "Samosas, chicken & drink", price: "GH₵50", image: samosaChickenDrinkImg, note: "Combo" },
+  { name: "Spring rolls, chicken & drink", price: "GH₵50", image: springrollChickenDrinkImg, note: "Combo" },
 ];
 
 const reasons = [
@@ -93,20 +92,20 @@ function HomePage() {
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-brand-yellow">The house plates</p>
-            <h2 className="mt-3 font-display text-5xl font-medium text-brand-dark md:text-6xl">Three plates, chosen for tonight.</h2>
+            <h2 className="mt-3 font-display text-5xl font-medium text-brand-dark md:text-6xl">The combos, plated together.</h2>
           </div>
           <Link to="/menu#promotions" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-dark">
             Full menu <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          {specials.map((item, index) => (
+        <div className="grid gap-5 md:grid-cols-2">
+          {specials.map((item) => (
             <Link
               key={item.name}
               to="/menu#promotions"
-              className={`group overflow-hidden border border-brand-dark/10 bg-brand-white ${index === 0 ? "md:col-span-2" : ""}`}
+              className="group overflow-hidden border border-brand-dark/10 bg-brand-white"
             >
-              <div className={`overflow-hidden ${index === 0 ? "h-80" : "h-56"}`}>
+              <div className="h-64 overflow-hidden">
                 <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
               </div>
               <div className="flex items-end justify-between gap-4 px-5 py-5">
@@ -124,18 +123,18 @@ function HomePage() {
       <section className="bg-brand-white py-20">
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 md:grid-cols-2">
           <div className="grid grid-cols-2 gap-3">
-            <img src={chickenImg} alt="Crispy chicken" className="h-56 w-full rounded-3xl object-cover" />
-            <img src={kebabImg} alt="Kebabs" className="mt-8 h-56 w-full rounded-3xl object-cover" />
-            <img src={sausageImg} alt="Sausage" className="-mt-6 h-40 w-full rounded-3xl object-cover" />
-            <img src={friesImg} alt="Fries" className="h-40 w-full rounded-3xl object-cover" />
+            <img src={chickenImg} alt="Crispy chicken" className="h-56 w-full border border-brand-yellow/40 object-cover" />
+            <img src={fries2ChickenImg} alt="Fries and chicken" className="mt-8 h-56 w-full border border-brand-yellow/40 object-cover" />
+            <img src={sausageImg} alt="Sausage" className="-mt-6 h-40 w-full border border-brand-yellow/40 object-cover" />
+            <img src={friesImg} alt="Fries" className="h-40 w-full border border-brand-yellow/40 object-cover" />
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-red">The kitchen</p>
-            <h2 className="mt-3 font-display text-4xl font-medium leading-tight text-brand-dark md:text-5xl">
-              Accra street food, plated without the wait.
+            <p className="text-[11px] uppercase tracking-[0.32em] text-brand-yellow">The kitchen</p>
+            <h2 className="mt-4 font-display text-5xl font-medium leading-tight text-brand-dark">
+              Street food, plated without the rush.
             </h2>
             <p className="mt-5 max-w-md text-base leading-relaxed text-brand-dark/70">
-              Smoky chicken, juicy kebabs, and fries that stay golden. We cook in small batches so the food that leaves Osu tastes like it just came off the grill.
+              Smoky chicken, juicy kebabs, and fries that stay golden. We cook in small batches so the food that leaves Achimota tastes like it just came off the grill.
             </p>
             <Link to="/about" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-brand-red">
               Our story <ArrowRight className="h-4 w-4" />
@@ -149,8 +148,8 @@ function HomePage() {
           <h2 className="font-display text-4xl font-medium">A look at the counter.</h2>
         </div>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-          {[friesImg, chickenImg, kebabImg, sausageImg, sweetChicksImg, megaCrunchDuoImg, cokeImg, fantaImg, spriteImg, waterImg].map((img, i) => (
-            <div key={i} className="aspect-square overflow-hidden rounded-2xl">
+          {[friesImg, chickenImg, sausageImg, fries2ChickenImg, samosaImg, fries3ChickenDrinkImg, samosaChickenDrinkImg, springrollChickenDrinkImg].map((img, i) => (
+            <div key={i} className="aspect-square overflow-hidden border border-brand-dark/10">
               <img src={img} alt="" className="h-full w-full object-cover" />
             </div>
           ))}

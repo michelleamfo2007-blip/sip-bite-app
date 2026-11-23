@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { ShoppingCart, Flame } from "lucide-react";
+import { Flame } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { menuData } from "@/data/menu";
-import chickenImg from "../../images/chicken.jpg";
+import chickenImg from "../../images/menu/fries-2-chicken.jpg";
 import { motion } from "motion/react";
 
 export default function Menu() {
@@ -12,26 +11,19 @@ export default function Menu() {
     { label: 'Fries', key: 'fries' },
     { label: 'Kebabs', key: 'kebabs' },
     { label: 'Chicken', key: 'chicken' },
-    { label: 'Snacks', key: 'snacks' },
+    { label: 'Small chops', key: 'snacks' },
     { label: 'Drinks', key: 'drinks' },
   ];
 
   const [active, setActive] = useState<string>('promotions');
 
-  const allItems = [
-    ...menuData.drinks,
-    ...menuData.regular,
-    ...menuData.snacks,
-    ...menuData.packages,
-  ];
-
   const sections: Record<string, any[]> = {
     promotions: menuData.packages,
     drinks: menuData.drinks,
     snacks: menuData.snacks,
-    fries: allItems.filter((i) => /fries/i.test(i.name)),
-    kebabs: allItems.filter((i) => /kebab/i.test(i.name)),
-    chicken: allItems.filter((i) => /chicken|wings/i.test(i.name)),
+    fries: menuData.fries,
+    kebabs: menuData.kebab,
+    chicken: menuData.chicken,
   };
 
   useEffect(() => {
@@ -152,7 +144,7 @@ function MenuItem({ item, isDrinks }: MenuItemProps) {
         <img
           src={item.image}
           alt={item.name}
-          className={`h-full w-full transform-gpu transition-transform duration-500 group-hover:scale-105 ${isDrinks ? 'object-contain p-6' : 'object-cover'}`}
+          className="h-full w-full transform-gpu object-cover transition-transform duration-500 group-hover:scale-105"
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Image';
           }}
@@ -166,10 +158,8 @@ function MenuItem({ item, isDrinks }: MenuItemProps) {
           </div>
           <p className="mt-1 text-sm font-semibold text-brand-red">GH₵{item.price.toFixed(2)}</p>
         </div>
-        <Link to={`/menu/${item.id}`} aria-label={`Order ${item.name}`}>
-          <Button size="icon" className="size-10 rounded-full bg-brand-dark text-white hover:bg-brand-red">
-            <ShoppingCart className="h-4 w-4" />
-          </Button>
+        <Link to={`/menu/${item.id}`} className="text-[11px] uppercase tracking-[0.2em] text-brand-dark/50 hover:text-brand-red">
+          Order
         </Link>
       </div>
     </motion.div>

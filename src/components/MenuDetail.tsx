@@ -13,7 +13,7 @@ export default function MenuDetail() {
   const imgRef = useRef<HTMLImageElement | null>(null);
 
   const item = useMemo(() => {
-    const all = [...menuData.drinks, ...menuData.regular, ...menuData.snacks, ...menuData.packages];
+    const all = [...menuData.drinks, ...menuData.kebab, ...menuData.fries, ...menuData.chicken, ...menuData.snacks, ...menuData.packages];
     return all.find((i) => i.id === id);
   }, [id]);
 

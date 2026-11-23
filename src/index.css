@@ -5,11 +5,11 @@
   --font-sans: "Outfit", sans-serif;
   --font-display: "Cormorant Garamond", serif;
 
-  --color-brand-red: #6E2C33;
-  --color-brand-yellow: #B8956A;
-  --color-brand-dark: #12100E;
-  --color-brand-cream: #F6F1E7;
-  --color-brand-white: #FBF8F3;
+  --color-brand-red: #E23B2F;
+  --color-brand-yellow: #F0B429;
+  --color-brand-dark: #0B1F1A;
+  --color-brand-cream: #E7F0EA;
+  --color-brand-white: #F7FBF8;
 }
 
 @layer base {
@@ -71,10 +71,10 @@
 }
 
 :root {
-    --background: #F6F1E7;
-    --foreground: #12100E;
-    --card: #FBF8F3;
-    --card-foreground: #12100E;
+    --background: #E7F0EA;
+    --foreground: #0B1F1A;
+    --card: #F7FBF8;
+    --card-foreground: #0B1F1A;
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
     --primary: oklch(0.205 0 0);
