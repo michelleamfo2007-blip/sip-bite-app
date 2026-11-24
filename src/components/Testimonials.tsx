@@ -1,24 +1,8 @@
 const testimonials = [
-  {
-    name: "Kwame Mensah",
-    role: "Accra",
-    content: "The sausage kebab is the one I come back for. The spice is exact, and it stays juicy.",
-  },
-  {
-    name: "Ama Serwaa",
-    role: "Achimota",
-    content: "Fries with two pieces of chicken is the weekday plate. It arrives quickly, and the fries are still crisp.",
-  },
-  {
-    name: "Kofi Boateng",
-    role: "Regular",
-    content: "Fries, three pieces of chicken, and a drink is enough for two, and ordering takes one message.",
-  },
-  {
-    name: "Esi Appiah",
-    role: "Cantonments",
-    content: "Honest portions. The four samosas are the plate I tell people to start with.",
-  },
+  { content: "The sausage kebab is the one I come back for. The spice is exact, and it stays juicy." },
+  { content: "Fries with two pieces of chicken is the weekday plate. It arrives quickly, and the fries are still crisp." },
+  { content: "Fries, three pieces of chicken, and a drink is enough for two, and ordering takes one message." },
+  { content: "Honest portions. The four samosas are the plate I tell people to start with." },
 ];
 
 export default function Testimonials() {
@@ -29,13 +13,10 @@ export default function Testimonials() {
         <h2 className="mt-4 max-w-xl font-display text-5xl font-medium text-white md:text-6xl">What they order again.</h2>
         <div className="mt-14 grid gap-12 md:grid-cols-2">
           {testimonials.map((t) => (
-            <figure key={t.name} className="border-t border-white/15 pt-6">
+            <figure key={t.content} className="border-t border-white/15 pt-6">
               <blockquote className="font-display text-3xl font-medium leading-snug text-white">
                 “{t.content}”
               </blockquote>
-              <figcaption className="mt-6 text-[11px] uppercase tracking-[0.22em] text-white/50">
-                {t.name} · {t.role}
-              </figcaption>
             </figure>
           ))}
         </div>

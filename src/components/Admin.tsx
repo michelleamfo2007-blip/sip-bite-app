@@ -149,8 +149,7 @@ export default function Admin() {
                 <p className="mt-1 text-sm text-brand-dark/70">
                   <a href={`tel:${order.phone}`} className="underline decoration-brand-yellow underline-offset-4">{order.phone}</a>
                   {" · "}
-                  {order.order_type === "delivery" ? "Delivery" : "Pickup"}
-                  {order.address ? ` · ${order.address}` : ""}
+                  {order.address || (order.order_type === "delivery" ? "Delivery" : "Pickup")}
                 </p>
               </div>
               <p className="font-display text-3xl text-brand-red">GH₵ {order.total}</p>

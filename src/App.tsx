@@ -107,17 +107,15 @@ function HomePage() {
             <Link
               key={item.name}
               to="/menu#promotions"
-              className="group overflow-hidden border border-brand-dark/10 bg-brand-white"
+              className="group flex h-full flex-col overflow-hidden border border-brand-dark/10 bg-brand-white"
             >
               <div className="h-64 overflow-hidden">
                 <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
               </div>
-              <div className="flex items-end justify-between gap-4 px-5 py-5">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.16em] text-brand-dark/45">{item.note}</p>
-                  <h3 className="mt-1 font-display text-2xl font-medium">{item.name}</h3>
-                </div>
-                <p className="text-sm font-semibold text-brand-red">{item.price}</p>
+              <div className="flex flex-1 flex-col px-5 py-5">
+                <p className="text-xs uppercase tracking-[0.16em] text-brand-dark/45">{item.note}</p>
+                <h3 className="mt-1 font-display text-2xl font-medium leading-tight">{item.name}</h3>
+                <p className="mt-auto pt-4 text-sm font-semibold text-brand-red">{item.price}</p>
               </div>
             </Link>
           ))}

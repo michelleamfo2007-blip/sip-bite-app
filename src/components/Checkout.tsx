@@ -7,18 +7,17 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { placeOrder } from "@/lib/orders";
 import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { ArrowLeft, Truck, Store, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Bike, Store, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Checkout() {
   const { cart, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
   const [step, setStep] = useState(1);
-  const [orderType, setOrderType] = useState<"delivery" | "pickup">("delivery");
+  const [collection, setCollection] = useState<"rider" | "own">("rider");
   const [isProcessing, setIsProcessing] = useState(false);
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
   const [orderError, setOrderError] = useState("");
   const [orderId, setOrderId] = useState("");
 
@@ -26,8 +25,8 @@ export default function Checkout() {
     if (user?.name) setName((current) => current || user.name);
   }, [user]);
 
-  const deliveryFee = orderType === "delivery" ? 10 : 0;
-  const total = totalPrice + deliveryFee;
+  const total = totalPrice;
+  const collectionLabel = collection === "rider" ? "A rider collects it" : "You collect it";
 
   const handleOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,8 +36,8 @@ export default function Checkout() {
       const id = await placeOrder({
         customer_name: name.trim(),
         phone: phone.trim(),
-        order_type: orderType,
-        address: orderType === "delivery" ? address.trim() : null,
+        order_type: "pickup",
+        address: collectionLabel,
         items: cart.map((item) => ({
           name: item.name,
           quantity: item.quantity,
@@ -46,7 +45,7 @@ export default function Checkout() {
           customization: item.customization || null,
         })),
         subtotal: totalPrice,
-        delivery_fee: deliveryFee,
+        delivery_fee: 0,
         total,
       });
       setOrderId(id.slice(0, 8).toUpperCase());
@@ -94,22 +93,23 @@ export default function Checkout() {
           <section className="bg-white p-8 rounded-[24px] shadow-sm border border-slate-100">
             <h2 className="text-xl font-black text-brand-dark uppercase tracking-widest mb-6 flex items-center gap-2">
               <span className="bg-brand-red text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
-              Order Type
+              Collection
             </h2>
-            <RadioGroup defaultValue={orderType} onValueChange={(value) => setOrderType(value as "delivery" | "pickup")} className="grid grid-cols-2 gap-4">
+            <RadioGroup value={collection} onValueChange={(value) => setCollection(value as "rider" | "own")} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="flex items-center space-x-2 bg-slate-50 p-6 rounded-2xl border-2 border-transparent has-[:checked]:border-brand-red transition-all cursor-pointer">
-                <RadioGroupItem value="delivery" id="delivery" className="text-brand-red" />
-                <Label htmlFor="delivery" className="font-bold cursor-pointer flex items-center gap-2">
-                  <Truck className="w-4 h-4" /> Delivery
+                <RadioGroupItem value="rider" id="rider" className="text-brand-red" />
+                <Label htmlFor="rider" className="font-bold cursor-pointer flex items-center gap-2">
+                  <Bike className="w-4 h-4" /> Send a rider
                 </Label>
               </div>
               <div className="flex items-center space-x-2 bg-slate-50 p-6 rounded-2xl border-2 border-transparent has-[:checked]:border-brand-red transition-all cursor-pointer">
-                <RadioGroupItem value="pickup" id="pickup" className="text-brand-red" />
-                <Label htmlFor="pickup" className="font-bold cursor-pointer flex items-center gap-2">
-                  <Store className="w-4 h-4" /> Pickup
+                <RadioGroupItem value="own" id="own" className="text-brand-red" />
+                <Label htmlFor="own" className="font-bold cursor-pointer flex items-center gap-2">
+                  <Store className="w-4 h-4" /> I'll pick it up
                 </Label>
               </div>
             </RadioGroup>
+            <p className="mt-4 text-sm text-slate-500">Orders are collected from Achimota. There is no delivery charge.</p>
           </section>
 
           <section className="bg-white p-8 rounded-[24px] shadow-sm border border-slate-100">
@@ -128,20 +128,13 @@ export default function Checkout() {
                   <Input id="phone" required className="rounded-xl border-slate-200 h-12" placeholder="053..." value={phone} onChange={(e) => setPhone(e.target.value)} />
                 </div>
               </div>
-              {orderType === "delivery" && (
-                <div className="space-y-2">
-                  <Label htmlFor="address" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Delivery Address</Label>
-                  <Input id="address" required className="rounded-xl border-slate-200 h-12" placeholder="Street name, Achimota, Accra" value={address} onChange={(e) => setAddress(e.target.value)} />
-                </div>
-              )}
-              
               <div className="pt-6">
                 <h2 className="text-xl font-black text-brand-dark uppercase tracking-widest mb-6 flex items-center gap-2">
                   <span className="bg-brand-red text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span>
                   Payment
                 </h2>
                 <div className="bg-slate-50 p-6 rounded-2xl border-2 border-brand-red mb-6">
-                  <p className="font-bold text-brand-dark">Pay on delivery or pickup</p>
+                  <p className="font-bold text-brand-dark">Pay when the order is collected</p>
                   <p className="mt-1 text-sm text-slate-500">Placing the order sends it to the kitchen. No card is charged on this page.</p>
                 </div>
                 {orderError && <p className="mb-4 text-sm font-bold text-red-600">{orderError}</p>}
@@ -178,8 +171,8 @@ export default function Checkout() {
                 <span>GH₵ {totalPrice}</span>
               </div>
               <div className="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-widest">
-                <span>{orderType === "delivery" ? "Delivery" : "Pickup"}</span>
-                <span>GH₵ {deliveryFee}</span>
+                <span>Collection</span>
+                <span className="normal-case tracking-normal">{collectionLabel}</span>
               </div>
               <div className="flex justify-between text-xl font-black text-brand-dark uppercase tracking-tighter pt-2">
                 <span>Total</span>

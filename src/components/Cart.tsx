@@ -80,7 +80,7 @@ export default function Cart() {
                 <span className="text-brand-dark/55">Plates</span>
                 <span>GH₵ {totalPrice}</span>
               </div>
-              <p className="text-xs leading-relaxed text-brand-dark/50">Delivery is GH₵10, added at checkout. Pickup has no charge.</p>
+              <p className="text-xs leading-relaxed text-brand-dark/50">Collected in Achimota. Send a rider, or pick it up yourself. There is no delivery charge.</p>
               <div className="flex justify-between border-t border-brand-dark/10 pt-3 font-display text-3xl">
                 <span>Total</span>
                 <span className="text-brand-red">GH₵ {totalPrice}</span>
