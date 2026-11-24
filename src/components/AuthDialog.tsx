@@ -5,6 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { User } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { listOrders, readOrderAddress, type HouseOrder, type OrderStatus } from "@/lib/orders";
+
+const orderStatusLabel: Record<OrderStatus, string> = {
+  new: "Received",
+  preparing: "In the kitchen",
+  ready: "Ready",
+  done: "Collected",
+};
 
 export default function AuthDialogButton() {
   const { user, login, register, logout, resetPassword } = useAuth();
@@ -18,6 +26,9 @@ export default function AuthDialogButton() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [orders, setOrders] = useState<HouseOrder[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [ordersError, setOrdersError] = useState("");
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -38,6 +49,28 @@ export default function AuthDialogButton() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!open || !user) return;
+    let cancelled = false;
+    setOrdersLoading(true);
+    setOrdersError("");
+    listOrders()
+      .then((rows) => {
+        if (cancelled) return;
+        const accountEmail = user.email.toLowerCase();
+        setOrders(rows.filter((order) => readOrderAddress(order.address).email.toLowerCase() === accountEmail));
+      })
+      .catch((err: { message?: string }) => {
+        if (!cancelled) setOrdersError(err?.message || "Could not load your orders.");
+      })
+      .finally(() => {
+        if (!cancelled) setOrdersLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, user]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -111,14 +144,14 @@ export default function AuthDialogButton() {
           }
         />
       )}
-      <DialogContent className="p-6 sm:max-w-md">
+      <DialogContent className={user ? "max-h-[85vh] overflow-y-auto p-6 sm:max-w-lg" : "p-6 sm:max-w-md"}>
         <DialogHeader>
           <DialogTitle className="font-black uppercase tracking-tighter">
             {user ? "Your Account" : mode === "login" ? "Sign In" : "Create Account"}
           </DialogTitle>
           <DialogDescription>
             {user
-              ? "Manage your account or sign out."
+              ? "Your orders, and the payment on each one."
               : mode === "login"
               ? "Sign in with your email and password."
               : "Create your account with your name, email, and a password."}
@@ -130,6 +163,34 @@ export default function AuthDialogButton() {
             <div className="rounded-xl border p-4 bg-slate-50">
               <p className="text-sm font-bold text-brand-dark">Signed in as</p>
               <p className="text-slate-600 text-sm">{user.name} ({user.email})</p>
+            </div>
+            <div className="space-y-3">
+              <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-400">Your orders</p>
+              {ordersLoading && <p className="text-sm text-slate-500">Loading your orders...</p>}
+              {ordersError && <p className="text-sm font-bold text-red-600">{ordersError}</p>}
+              {!ordersLoading && !ordersError && orders.length === 0 && (
+                <p className="text-sm text-slate-500">No orders with this email yet. An order shows here when checkout uses {user.email}.</p>
+              )}
+              {orders.map((order) => {
+                const note = readOrderAddress(order.address);
+                return (
+                  <div key={order.id} className="rounded-xl border border-slate-100 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-[11px] font-black tracking-[0.16em] text-brand-dark">{order.id.slice(0, 8).toUpperCase()}</p>
+                      <p className="text-sm font-bold text-brand-red">GH₵ {order.total}</p>
+                    </div>
+                    <p className="mt-2 text-sm text-brand-dark">
+                      {order.items.map((item) => `${item.quantity}× ${item.name}`).join(", ")}
+                    </p>
+                    {note.summary && <p className="mt-1 text-xs leading-relaxed text-slate-500">{note.summary}</p>}
+                    <p className="mt-2 text-xs font-bold text-brand-dark">
+                      {note.paymentConfirmed ? "Payment confirmed" : "Payment pending"}
+                      {" · "}
+                      {orderStatusLabel[order.status]}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
             <DialogFooter className="justify-between">
               <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>

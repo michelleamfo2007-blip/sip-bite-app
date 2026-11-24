@@ -85,3 +85,32 @@ on public.orders for update
 to authenticated
 using (public.is_admin())
 with check (public.is_admin());
+
+-- Customers can read an order when its saved email matches the account they signed in with.
+create or replace function public.customer_can_read_order(order_address text)
+returns boolean
+language plpgsql
+stable
+as $$
+declare
+  extra text;
+  note jsonb;
+begin
+  extra := split_part(coalesce(order_address, ''), E'\n---\n', 2);
+  if extra is null or btrim(extra) = '' or left(btrim(extra), 1) <> '{' then
+    return false;
+  end if;
+  note := extra::jsonb;
+  return lower(coalesce(note ->> 'email', '')) = lower(coalesce(auth.jwt() ->> 'email', ''));
+exception when others then
+  return false;
+end;
+$$;
+
+grant execute on function public.customer_can_read_order(text) to authenticated;
+
+drop policy if exists "customers can read their own orders" on public.orders;
+create policy "customers can read their own orders"
+on public.orders for select
+to authenticated
+using (public.customer_can_read_order(address));

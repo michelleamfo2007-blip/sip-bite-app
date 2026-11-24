@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { placeOrder } from "@/lib/orders";
+import { packOrderAddress, placeOrder } from "@/lib/orders";
 import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowLeft, Banknote, Bike, Smartphone, Store, CheckCircle2 } from "lucide-react";
@@ -41,6 +41,8 @@ function formatOrderDate(isoDate: string) {
 const SHOP_LOCATION = "Achimota, Accra, Ghana";
 const SHOP_PHONE = "053 785 8896";
 const SHOP_PHONE_TEL = "0537858896";
+const MOMO_NAME = "Michelle Amfo";
+const MOMO_NUMBER = "054 978 9315";
 const RIDER_DETAILS = `Sip & Bite\nCollect from ${SHOP_LOCATION}\nCall ${SHOP_PHONE}\nhttps://maps.google.com/?q=Achimota,Accra,Ghana`;
 
 function ShopDetails({ forRider }: { forRider: boolean }) {
@@ -112,7 +114,7 @@ export default function Checkout() {
   const paymentLabel = payment === "cash"
     ? "cash when it is collected"
     : payment === "momo"
-    ? `mobile money to ${SHOP_PHONE}`
+    ? `mobile money to ${MOMO_NAME}, ${MOMO_NUMBER}`
     : "";
 
   const handleOrder = async (e: React.FormEvent) => {
@@ -126,15 +128,21 @@ export default function Checkout() {
       setOrderError("Choose cash or mobile money.");
       return;
     }
+    const recipient = email.trim();
+    if (!recipient) {
+      setOrderError("Add an email so the confirmation can be sent.");
+      return;
+    }
     setIsProcessing(true);
     const paymentSentence = `Pay GH₵ ${total} by ${paymentLabel}.`;
-    const placedMessage = `Your order has been successfully placed. ${paymentSentence} ${receiptLine}`;
+    const confirmation = `Your order has been successfully placed. ${paymentSentence} ${receiptLine}`;
+    const summary = `${collectionLabel}. ${dateLabel} at ${placeLabel} at ${timeLabel}. Pay by ${paymentLabel}`;
     try {
       const id = await placeOrder({
         customer_name: name.trim(),
         phone: phone.trim(),
         order_type: "pickup",
-        address: `${collectionLabel}. ${dateLabel} at ${placeLabel} at ${timeLabel}. Pay by ${paymentLabel}`,
+        address: packOrderAddress(summary, { email: recipient, message: confirmation, paymentConfirmed: false }),
         items: cart.map((item) => ({
           name: item.name,
           quantity: item.quantity,
@@ -146,19 +154,9 @@ export default function Checkout() {
         total,
       });
       setOrderId(id.slice(0, 8).toUpperCase());
-      setReceipt(placedMessage);
+      setReceipt(`${paymentSentence} The order confirmation is sent after payment is confirmed.`);
       setStep(3);
       clearCart();
-      const recipient = email.trim();
-      if (recipient) {
-        try {
-          await fetch("/api/send-order-email", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ to: recipient, name: name.trim(), message: `${paymentSentence} ${receiptLine}` }),
-          });
-        } catch {}
-      }
     } catch (err: any) {
       setOrderError(err?.message || "The order could not be saved.");
     } finally {
@@ -174,10 +172,10 @@ export default function Checkout() {
           animate={{ opacity: 1, scale: 1 }}
           className="bg-white p-12 rounded-[32px] shadow-xl border border-slate-100 text-center max-w-md w-full"
         >
-          <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="text-green-500 w-10 h-10" />
+          <div className="bg-brand-yellow/20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="text-brand-dark w-10 h-10" />
           </div>
-          <h2 className="text-4xl font-black text-brand-dark uppercase tracking-tighter mb-4">Order placed</h2>
+          <h2 className="text-4xl font-black text-brand-dark uppercase tracking-tighter mb-4">Payment pending</h2>
           <p className="text-slate-500 font-medium mb-2">{receipt}</p>
           {orderId && <p className="mb-8 text-sm font-black tracking-[0.2em] text-brand-dark">ORDER {orderId}</p>}
           <ShopDetails forRider={collection === "rider"} />
@@ -254,7 +252,7 @@ export default function Checkout() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Email</Label>
-                <Input id="email" type="email" className="rounded-xl border-slate-200 h-12" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <Input id="email" type="email" required className="rounded-xl border-slate-200 h-12" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               <div className="pt-6">
                 <h2 className="text-xl font-black text-brand-dark uppercase tracking-widest mb-6 flex items-center gap-2">
@@ -277,8 +275,8 @@ export default function Checkout() {
                 </RadioGroup>
                 <p className="mb-6 text-sm text-slate-500">
                   {payment === "cash" && `Pay GH₵ ${total} in cash when the order is collected.`}
-                  {payment === "momo" && `Send GH₵ ${total} to ${SHOP_PHONE} before the order is collected.`}
-                  {!payment && "Choose cash or mobile money. The order is placed after you pick one."}
+                  {payment === "momo" && `Send GH₵ ${total} to ${MOMO_NAME}, ${MOMO_NUMBER}, before the order is collected.`}
+                  {!payment && "Choose cash or mobile money. The confirmation is sent after Sip & Bite confirms the payment."}
                 </p>
                 {orderError && <p className="mb-4 text-sm font-bold text-red-600">{orderError}</p>}
                 <Button 

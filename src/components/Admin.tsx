@@ -3,7 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { HouseOrder, OrderStatus, listOrders, orderStatuses, updateOrderStatus } from "@/lib/orders";
+import { HouseOrder, OrderStatus, confirmOrderPayment, listOrders, orderStatuses, readOrderAddress, updateOrderStatus } from "@/lib/orders";
 
 interface Profile {
   id: string;
@@ -27,6 +27,7 @@ export default function Admin() {
   const [filter, setFilter] = useState<OrderStatus | "all">("all");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [confirmingId, setConfirmingId] = useState("");
 
   const load = async () => {
     if (!supabase || !user || user.role !== "admin") return;
@@ -50,6 +51,19 @@ export default function Admin() {
   useEffect(() => {
     load();
   }, [user]);
+
+  const confirmPayment = async (order: HouseOrder) => {
+    setConfirmingId(order.id);
+    setError("");
+    try {
+      const address = await confirmOrderPayment(order);
+      setOrders((current) => current.map((row) => (row.id === order.id ? { ...row, address } : row)));
+    } catch (err: any) {
+      setError(err?.message || "The confirmation could not be sent.");
+    } finally {
+      setConfirmingId("");
+    }
+  };
 
   const setStatus = async (id: string, status: OrderStatus) => {
     const previous = orders;
@@ -138,7 +152,9 @@ export default function Admin() {
             <p className="mt-2 text-sm text-brand-dark/60">A checkout will appear here as soon as it is placed.</p>
           </div>
         )}
-        {visible.map((order) => (
+        {visible.map((order) => {
+          const note = readOrderAddress(order.address);
+          return (
           <article key={order.id} className="border border-brand-dark/10 bg-brand-white p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -148,8 +164,9 @@ export default function Admin() {
                 <h2 className="mt-2 font-display text-3xl font-medium">{order.customer_name}</h2>
                 <p className="mt-1 text-sm text-brand-dark/70">
                   <a href={`tel:${order.phone}`} className="underline decoration-brand-yellow underline-offset-4">{order.phone}</a>
+                  {note.email ? ` · ${note.email}` : ""}
                   {" · "}
-                  {order.address || (order.order_type === "delivery" ? "Delivery" : "Pickup")}
+                  {note.summary || (order.order_type === "delivery" ? "Delivery" : "Pickup")}
                 </p>
               </div>
               <p className="font-display text-3xl text-brand-red">GH₵ {order.total}</p>
@@ -165,6 +182,22 @@ export default function Admin() {
                 </li>
               ))}
             </ul>
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              {note.paymentConfirmed ? (
+                <p className="text-sm text-brand-dark/70">Payment confirmed. The order message was sent.</p>
+              ) : note.email && note.message ? (
+                <button
+                  type="button"
+                  disabled={confirmingId === order.id}
+                  onClick={() => confirmPayment(order)}
+                  className="border border-brand-red bg-brand-red px-4 py-2 text-[11px] uppercase tracking-[0.16em] text-white disabled:opacity-60"
+                >
+                  {confirmingId === order.id ? "Sending..." : "Confirm payment"}
+                </button>
+              ) : (
+                <p className="text-sm text-brand-dark/50">No confirmation email on this order.</p>
+              )}
+            </div>
             <div className="mt-5 flex flex-wrap gap-2">
               {orderStatuses.map((status) => (
                 <button
@@ -182,7 +215,8 @@ export default function Admin() {
               ))}
             </div>
           </article>
-        ))}
+          );
+        })}
       </div>
 
       <section className="mt-16 border border-brand-dark/10 bg-brand-white p-6">

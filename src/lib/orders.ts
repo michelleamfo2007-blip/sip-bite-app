@@ -25,6 +25,63 @@ export type HouseOrder = {
 
 export const orderStatuses: OrderStatus[] = ["new", "preparing", "ready", "done"];
 
+const NOTE_SPLIT = "\n---\n";
+
+export type OrderNote = {
+  summary: string;
+  email: string;
+  message: string;
+  paymentConfirmed: boolean;
+};
+
+export function packOrderAddress(summary: string, note: { email: string; message: string; paymentConfirmed: boolean }) {
+  return `${summary}${NOTE_SPLIT}${JSON.stringify({
+    email: note.email,
+    message: note.message,
+    paymentConfirmed: note.paymentConfirmed,
+  })}`;
+}
+
+export function readOrderAddress(address: string | null): OrderNote {
+  const raw = address || "";
+  const splitAt = raw.indexOf(NOTE_SPLIT);
+  const summary = (splitAt === -1 ? raw : raw.slice(0, splitAt)).trim();
+  const extra = splitAt === -1 ? "" : raw.slice(splitAt + NOTE_SPLIT.length);
+  let email = "";
+  let message = "";
+  let paymentConfirmed = false;
+  if (extra) {
+    try {
+      const parsed = JSON.parse(extra) as { email?: unknown; message?: unknown; paymentConfirmed?: unknown };
+      email = typeof parsed.email === "string" ? parsed.email : "";
+      message = typeof parsed.message === "string" ? parsed.message : "";
+      paymentConfirmed = parsed.paymentConfirmed === true;
+    } catch {
+      email = "";
+    }
+  }
+  return { summary, email, message, paymentConfirmed };
+}
+
+export async function confirmOrderPayment(order: HouseOrder) {
+  if (!supabase) throw new Error("The database is not connected yet.");
+  const note = readOrderAddress(order.address);
+  if (!note.email || !note.message) throw new Error("This order has no email for the confirmation.");
+  const response = await fetch("/api/send-order-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ to: note.email, name: order.customer_name, message: note.message }),
+  });
+  const body = await response.json().catch(() => ({} as { status?: string; message?: string }));
+  if (!response.ok || body.status === "skipped" || body.status === "error") {
+    throw new Error(body.message || "The confirmation could not be sent.");
+  }
+  const address = packOrderAddress(note.summary, { email: note.email, message: note.message, paymentConfirmed: true });
+  const { error } = await supabase.from("orders").update({ address }).eq("id", order.id);
+  if (error) throw error;
+  return address;
+}
+
 export async function placeOrder(order: Omit<HouseOrder, "id" | "created_at" | "status">) {
   if (!supabase) throw new Error("The database is not connected yet.");
   const id = crypto.randomUUID();
