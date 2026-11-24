@@ -10,6 +10,46 @@ import { motion } from "motion/react";
 import { ArrowLeft, Bike, Store, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
+function todayInputValue() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
+function ordinal(day: number) {
+  const mod = day % 100;
+  if (mod >= 11 && mod <= 13) return `${day}th`;
+  if (day % 10 === 1) return `${day}st`;
+  if (day % 10 === 2) return `${day}nd`;
+  if (day % 10 === 3) return `${day}rd`;
+  return `${day}th`;
+}
+
+function formatOrderDate(isoDate: string) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(isoDate);
+  if (!match) return isoDate;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(year, month - 1, day);
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return isoDate;
+  const monthName = date.toLocaleString("en-GB", { month: "long" });
+  return `${ordinal(day)} ${monthName} ${year}`;
+}
+
+function formatOrderTime(value: string) {
+  const match = /^(\d{2}):(\d{2})$/.exec(value);
+  if (!match) return value;
+  let hour = Number(match[1]);
+  const minute = Number(match[2]);
+  if (hour > 23 || minute > 59) return value;
+  const suffix = hour >= 12 ? "pm" : "am";
+  hour = hour % 12 || 12;
+  if (minute === 0) return `${hour}${suffix}`;
+  return `${hour}:${String(minute).padStart(2, "0")}${suffix}`;
+}
+
 export default function Checkout() {
   const { cart, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
@@ -18,26 +58,43 @@ export default function Checkout() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState(user?.email || "");
+  const [orderDate, setOrderDate] = useState(todayInputValue);
+  const [place, setPlace] = useState("");
+  const [orderTime, setOrderTime] = useState("");
   const [orderError, setOrderError] = useState("");
   const [orderId, setOrderId] = useState("");
+  const [receipt, setReceipt] = useState("");
 
   useEffect(() => {
     if (user?.name) setName((current) => current || user.name);
+    if (user?.email) setEmail((current) => current || user.email);
   }, [user]);
 
   const total = totalPrice;
   const collectionLabel = collection === "rider" ? "A rider collects it" : "You collect it";
+  const dateLabel = formatOrderDate(orderDate);
+  const timeLabel = orderTime ? formatOrderTime(orderTime) : "";
+  const placeLabel = place.trim();
+  const receiptLine = placeLabel && timeLabel
+    ? `You will receive it on ${dateLabel} at ${placeLabel} at ${timeLabel}.`
+    : "";
 
   const handleOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setOrderError("");
+    if (!receiptLine) {
+      setOrderError("Add the day, the place, and the time.");
+      return;
+    }
     setIsProcessing(true);
+    const placedMessage = `Your order has been successfully placed. ${receiptLine}`;
     try {
       const id = await placeOrder({
         customer_name: name.trim(),
         phone: phone.trim(),
         order_type: "pickup",
-        address: collectionLabel,
+        address: `${collectionLabel}. ${dateLabel} at ${placeLabel} at ${timeLabel}`,
         items: cart.map((item) => ({
           name: item.name,
           quantity: item.quantity,
@@ -49,8 +106,19 @@ export default function Checkout() {
         total,
       });
       setOrderId(id.slice(0, 8).toUpperCase());
+      setReceipt(placedMessage);
       setStep(3);
       clearCart();
+      const recipient = email.trim();
+      if (recipient) {
+        try {
+          await fetch("/api/send-order-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ to: recipient, name: name.trim(), message: receiptLine }),
+          });
+        } catch {}
+      }
     } catch (err: any) {
       setOrderError(err?.message || "The order could not be saved.");
     } finally {
@@ -69,10 +137,8 @@ export default function Checkout() {
           <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="text-green-500 w-10 h-10" />
           </div>
-          <h2 className="text-4xl font-black text-brand-dark uppercase tracking-tighter mb-4">Order Confirmed!</h2>
-          <p className="text-slate-500 font-medium mb-2">
-            Sip & Bite has the order. The kitchen can see it on the admin page.
-          </p>
+          <h2 className="text-4xl font-black text-brand-dark uppercase tracking-tighter mb-4">Order placed</h2>
+          <p className="text-slate-500 font-medium mb-2">{receipt}</p>
           {orderId && <p className="mb-8 text-sm font-black tracking-[0.2em] text-brand-dark">ORDER {orderId}</p>}
           <Button className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-6 rounded-xl uppercase" render={<Link to="/">Back to Home</Link>} />
         </motion.div>
@@ -109,7 +175,23 @@ export default function Checkout() {
                 </Label>
               </div>
             </RadioGroup>
-            <p className="mt-4 text-sm text-slate-500">Orders are collected from Achimota. There is no delivery charge.</p>
+            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="order-date" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Date</Label>
+                <Input id="order-date" type="date" required className="rounded-xl border-slate-200 h-12" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="order-time" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Time</Label>
+                <Input id="order-time" type="time" required className="rounded-xl border-slate-200 h-12" value={orderTime} onChange={(e) => setOrderTime(e.target.value)} />
+              </div>
+            </div>
+            <div className="mt-4 space-y-2">
+              <Label htmlFor="place" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Place</Label>
+              <Input id="place" required className="rounded-xl border-slate-200 h-12" placeholder="Ghud Park" value={place} onChange={(e) => setPlace(e.target.value)} />
+            </div>
+            <p className="mt-4 text-sm text-slate-500">
+              {receiptLine || "Orders are collected from Achimota. There is no delivery charge."}
+            </p>
           </section>
 
           <section className="bg-white p-8 rounded-[24px] shadow-sm border border-slate-100">
@@ -127,6 +209,10 @@ export default function Checkout() {
                   <Label htmlFor="phone" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Phone Number</Label>
                   <Input id="phone" required className="rounded-xl border-slate-200 h-12" placeholder="053..." value={phone} onChange={(e) => setPhone(e.target.value)} />
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Email</Label>
+                <Input id="email" type="email" className="rounded-xl border-slate-200 h-12" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               <div className="pt-6">
                 <h2 className="text-xl font-black text-brand-dark uppercase tracking-widest mb-6 flex items-center gap-2">
