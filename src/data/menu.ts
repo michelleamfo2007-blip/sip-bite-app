@@ -8,6 +8,8 @@ import fries2ChickenImg from "../../images/menu/fries-2-chicken.jpg";
 import fries3ChickenDrinkImg from "../../images/menu/fries-3-chicken-drink.jpg";
 import samosaChickenDrinkImg from "../../images/menu/samosa-chicken-drink.jpg";
 import springrollChickenDrinkImg from "../../images/menu/springroll-chicken-drink.jpg";
+import samosa3ChickenDrinkImg from "../../images/menu/samosa-3-chicken-drink.jpg";
+import springroll3ChickenDrinkImg from "../../images/menu/springroll-3-chicken-drink.jpg";
 import fantaImg from "../../images/fanta.jpeg";
 import cokeImg from "../../images/coke.jpeg";
 import spriteImg from "../../images/sprite.jpeg";
@@ -41,5 +43,7 @@ export const menuData = {
     { id: "p2", name: "Fries, 3 chicken & drink", price: 80, description: "Fries, three chicken pieces, and a drink", image: fries3ChickenDrinkImg, tag: "Combo", options: drinkOptions },
     { id: "p3", name: "Samosas, 2 chicken & drink", price: 50, description: "Samosas, two pieces of chicken, and a drink", image: samosaChickenDrinkImg, tag: "Combo", options: drinkOptions },
     { id: "p4", name: "Spring rolls, 2 chicken & drink", price: 50, description: "Spring rolls, two pieces of chicken, and a drink", image: springrollChickenDrinkImg, tag: "Combo", options: drinkOptions },
+    { id: "p5", name: "Fries, samosas, 3 chicken & drink", price: 100, description: "Fries, samosas, three chicken pieces, and a drink", image: samosa3ChickenDrinkImg, tag: "Combo", options: drinkOptions },
+    { id: "p6", name: "Fries, spring rolls, 3 chicken & drink", price: 100, description: "Fries, spring rolls, three chicken pieces, and a drink", image: springroll3ChickenDrinkImg, tag: "Combo", options: drinkOptions },
   ],
 };

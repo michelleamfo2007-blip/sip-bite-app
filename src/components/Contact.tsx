@@ -101,7 +101,7 @@ export default function Contact({ compact = false }: { compact?: boolean }) {
           <h2 className="font-display text-3xl font-medium">Quick answers</h2>
           <div className="mt-8 grid gap-8 md:grid-cols-2">
             <Faq q="Do you deliver?" a="Yes, across central Accra. WhatsApp is the fastest way to place it." />
-            <Faq q="How long does it take?" a="Usually 20–45 minutes, depending on where you are and how busy the grill is." />
+            <Faq q="How long does it take?" a="Usually 5–10 minutes." />
             <Faq q="Which areas?" a="Achimota first, then the neighborhoods around it. Message us if you’re unsure." />
             <Faq q="Can I order ahead?" a="Yes. Send the time you want it and we’ll hold the plate." />
           </div>

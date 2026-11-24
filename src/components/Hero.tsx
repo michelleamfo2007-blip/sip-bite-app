@@ -34,7 +34,7 @@ export default function Hero() {
           <dl className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-brand-dark/10 pt-6 text-[11px] uppercase tracking-[0.18em] text-brand-dark/55">
             <div>
               <dt className="text-brand-yellow">Service</dt>
-              <dd className="mt-2 text-brand-dark">20–45 min</dd>
+              <dd className="mt-2 text-brand-dark">5–10 min</dd>
             </div>
             <div>
               <dt className="text-brand-yellow">Hours</dt>

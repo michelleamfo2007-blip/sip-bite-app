@@ -150,17 +150,17 @@ function MenuItem({ item, isDrinks }: MenuItemProps) {
           }}
         />
       </Link>
-      <div className="flex items-start justify-between gap-3 px-4 py-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h3 className="font-display text-xl font-medium leading-tight text-brand-dark">{item.name}</h3>
-            {item.popular && <Flame className="h-4 w-4 fill-brand-yellow text-brand-yellow" />}
-          </div>
-          <p className="mt-1 text-sm font-semibold text-brand-red">GH₵{item.price.toFixed(2)}</p>
+      <div className="px-4 py-4">
+        <div className="flex items-start gap-2">
+          <h3 className="min-w-0 font-display text-xl font-medium leading-tight text-balance text-brand-dark">{item.name}</h3>
+          {item.popular && <Flame className="mt-1 h-4 w-4 shrink-0 fill-brand-yellow text-brand-yellow" />}
         </div>
-        <Link to={`/menu/${item.id}`} className="text-[11px] uppercase tracking-[0.2em] text-brand-dark/50 hover:text-brand-red">
-          Order
-        </Link>
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <p className="text-sm font-semibold text-brand-red">GH₵{item.price.toFixed(2)}</p>
+          <Link to={`/menu/${item.id}`} className="shrink-0 text-[11px] uppercase tracking-[0.2em] text-brand-dark/50 hover:text-brand-red">
+            Order
+          </Link>
+        </div>
       </div>
     </motion.div>
   );

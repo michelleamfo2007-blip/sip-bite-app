@@ -22,6 +22,8 @@ import fries2ChickenImg from "../images/menu/fries-2-chicken.jpg";
 import fries3ChickenDrinkImg from "../images/menu/fries-3-chicken-drink.jpg";
 import samosaChickenDrinkImg from "../images/menu/samosa-chicken-drink.jpg";
 import springrollChickenDrinkImg from "../images/menu/springroll-chicken-drink.jpg";
+import samosa3ChickenDrinkImg from "../images/menu/samosa-3-chicken-drink.jpg";
+import springroll3ChickenDrinkImg from "../images/menu/springroll-3-chicken-drink.jpg";
 import samosaImg from "../images/menu/samosa-3.jpg";
 
 function ScrollToTop() {
@@ -63,6 +65,8 @@ const specials = [
   { name: "Fries, 3 chicken & drink", price: "GH₵80", image: fries3ChickenDrinkImg, note: "Combo" },
   { name: "Samosas, 2 chicken & drink", price: "GH₵50", image: samosaChickenDrinkImg, note: "Combo" },
   { name: "Spring rolls, 2 chicken & drink", price: "GH₵50", image: springrollChickenDrinkImg, note: "Combo" },
+  { name: "Fries, samosas, 3 chicken & drink", price: "GH₵100", image: samosa3ChickenDrinkImg, note: "Combo" },
+  { name: "Fries, spring rolls, 3 chicken & drink", price: "GH₵100", image: springroll3ChickenDrinkImg, note: "Combo" },
 ];
 
 const reasons = [

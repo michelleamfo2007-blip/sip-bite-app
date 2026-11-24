@@ -27,13 +27,10 @@ export const orderStatuses: OrderStatus[] = ["new", "preparing", "ready", "done"
 
 export async function placeOrder(order: Omit<HouseOrder, "id" | "created_at" | "status">) {
   if (!supabase) throw new Error("The database is not connected yet.");
-  const { data, error } = await supabase
-    .from("orders")
-    .insert({ ...order, status: "new" })
-    .select("id")
-    .single();
+  const id = crypto.randomUUID();
+  const { error } = await supabase.from("orders").insert({ ...order, id, status: "new" });
   if (error) throw error;
-  return data.id as string;
+  return id;
 }
 
 export async function listOrders() {
