@@ -3,7 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { HouseOrder, OrderStatus, confirmOrderPayment, listOrders, orderStatuses, readOrderAddress, updateOrderStatus } from "@/lib/orders";
+import { HouseOrder, OrderStatus, confirmOrderPayment, listOrders, orderStatuses, readOrderAddress, sendPreparingNotice, sendReadyNotice, updateOrderStatus } from "@/lib/orders";
 
 interface Profile {
   id: string;
@@ -66,9 +66,14 @@ export default function Admin() {
   };
 
   const setStatus = async (id: string, status: OrderStatus) => {
+    const order = orders.find((row) => row.id === id);
+    if (!order || order.status === status) return;
     const previous = orders;
-    setOrders((current) => current.map((order) => (order.id === id ? { ...order, status } : order)));
+    setError("");
+    setOrders((current) => current.map((row) => (row.id === id ? { ...row, status } : row)));
     try {
+      if (status === "preparing") await sendPreparingNotice(order);
+      if (status === "ready") await sendReadyNotice(order);
       await updateOrderStatus(id, status);
     } catch (err: any) {
       setOrders(previous);

@@ -63,19 +63,23 @@ export function readOrderAddress(address: string | null): OrderNote {
   return { summary, email, message, paymentConfirmed };
 }
 
+async function sendOrderEmail(payload: { to: string; name: string; message: string; subject?: string; heading?: string }) {
+  const response = await fetch("/api/send-order-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const body = await response.json().catch(() => ({} as { status?: string; message?: string }));
+  if (!response.ok || body.status === "skipped" || body.status === "error") {
+    throw new Error(body.message || "The email could not be sent.");
+  }
+}
+
 export async function confirmOrderPayment(order: HouseOrder) {
   if (!supabase) throw new Error("The database is not connected yet.");
   const note = readOrderAddress(order.address);
   if (!note.email || !note.message) throw new Error("This order has no email for the confirmation.");
-  const response = await fetch("/api/send-order-email", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ to: note.email, name: order.customer_name, message: note.message }),
-  });
-  const body = await response.json().catch(() => ({} as { status?: string; message?: string }));
-  if (!response.ok || body.status === "skipped" || body.status === "error") {
-    throw new Error(body.message || "The confirmation could not be sent.");
-  }
+  await sendOrderEmail({ to: note.email, name: order.customer_name, message: note.message });
   const address = packOrderAddress(note.summary, { email: note.email, message: note.message, paymentConfirmed: true });
   const { error } = await supabase.from("orders").update({ address }).eq("id", order.id);
   if (error) throw error;
@@ -98,6 +102,53 @@ export async function listOrders() {
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data || []) as HouseOrder[];
+}
+
+export async function sendPreparingNotice(order: HouseOrder) {
+  const note = readOrderAddress(order.address);
+  if (!note.email) throw new Error("This order has no email, so the preparing message was not sent.");
+  const items = order.items.map((item) => `${item.quantity}× ${item.name}`).join(", ");
+  const message = [
+    "Your order is being prepared.",
+    "We will email you when it is ready. You can pick it up yourself, or send a rider to collect it.",
+    "",
+    "Sip & Bite",
+    "Achimota, Accra, Ghana",
+    "Call 053 785 8896",
+    "",
+    `Order ${order.id.slice(0, 8).toUpperCase()}: ${items}`,
+  ].join("\n");
+  await sendOrderEmail({
+    to: note.email,
+    name: order.customer_name,
+    message,
+    subject: "Your order is being prepared",
+    heading: "Your order is being prepared.",
+  });
+}
+
+export async function sendReadyNotice(order: HouseOrder) {
+  const note = readOrderAddress(order.address);
+  if (!note.email) throw new Error("This order has no email, so the ready message was not sent.");
+  const items = order.items.map((item) => `${item.quantity}× ${item.name}`).join(", ");
+  const message = [
+    "Your order is ready.",
+    "You can pick it up yourself, or send a rider to collect it.",
+    "",
+    "Sip & Bite",
+    "Achimota, Accra, Ghana",
+    "Call 053 785 8896",
+    "https://maps.google.com/?q=Achimota,Accra,Ghana",
+    "",
+    `Order ${order.id.slice(0, 8).toUpperCase()}: ${items}`,
+  ].join("\n");
+  await sendOrderEmail({
+    to: note.email,
+    name: order.customer_name,
+    message,
+    subject: "Your order is ready",
+    heading: "Your order is ready.",
+  });
 }
 
 export async function updateOrderStatus(id: string, status: OrderStatus) {
