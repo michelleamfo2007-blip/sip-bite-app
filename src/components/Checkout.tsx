@@ -38,6 +38,35 @@ function formatOrderDate(isoDate: string) {
   return `${ordinal(day)} ${monthName} ${year}`;
 }
 
+const SHOP_LOCATION = "Achimota, Accra, Ghana";
+const SHOP_PHONE = "053 785 8896";
+const SHOP_PHONE_TEL = "0537858896";
+const RIDER_DETAILS = `Sip & Bite\nCollect from ${SHOP_LOCATION}\nCall ${SHOP_PHONE}\nhttps://maps.google.com/?q=Achimota,Accra,Ghana`;
+
+function ShopDetails({ forRider }: { forRider: boolean }) {
+  const shareHref = `https://wa.me/?text=${encodeURIComponent(RIDER_DETAILS)}`;
+  return (
+    <div className="mt-4 rounded-2xl bg-slate-50 p-6 text-left">
+      <p className="font-bold text-brand-dark">{forRider ? "Give this to your rider" : "Collect it here"}</p>
+      <p className="mt-1 text-sm text-slate-500">
+        {forRider
+          ? "Send our number and location so the rider can find the order."
+          : "This is our number and location. Send them to anyone who is collecting the order."}
+      </p>
+      <p className="mt-4 text-sm font-bold text-brand-dark">{SHOP_LOCATION}</p>
+      <a href={`tel:${SHOP_PHONE_TEL}`} className="mt-1 block text-sm font-bold text-brand-red">{SHOP_PHONE}</a>
+      <a
+        href={shareHref}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-4 inline-flex h-11 items-center justify-center rounded-xl bg-brand-dark px-4 text-[11px] font-black uppercase tracking-[0.18em] text-white"
+      >
+        Send these details
+      </a>
+    </div>
+  );
+}
+
 function formatOrderTime(value: string) {
   const match = /^(\d{2}):(\d{2})$/.exec(value);
   if (!match) return value;
@@ -140,7 +169,8 @@ export default function Checkout() {
           <h2 className="text-4xl font-black text-brand-dark uppercase tracking-tighter mb-4">Order placed</h2>
           <p className="text-slate-500 font-medium mb-2">{receipt}</p>
           {orderId && <p className="mb-8 text-sm font-black tracking-[0.2em] text-brand-dark">ORDER {orderId}</p>}
-          <Button className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-6 rounded-xl uppercase" render={<Link to="/">Back to Home</Link>} />
+          <ShopDetails forRider={collection === "rider"} />
+          <Button className="mt-8 w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-6 rounded-xl uppercase" render={<Link to="/">Back to Home</Link>} />
         </motion.div>
       </div>
     );
@@ -175,6 +205,7 @@ export default function Checkout() {
                 </Label>
               </div>
             </RadioGroup>
+            <ShopDetails forRider={collection === "rider"} />
             <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="order-date" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Date</Label>

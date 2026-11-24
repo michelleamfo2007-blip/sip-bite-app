@@ -63,19 +63,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       })();
 
-      const { data: sub } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
         const sUser = session?.user;
-        if (sUser?.email) {
-          const name =
-            (sUser.user_metadata?.name as string | undefined) ||
-            (sUser.user_metadata?.full_name as string | undefined) ||
-            sUser.email.split("@")[0];
-          const role = await fetchRole(sUser.id);
-          setUser({ name, email: sUser.email, role });
-          await upsertProfile(sUser.id, name, sUser.email);
-        } else {
+        if (!sUser?.email) {
           setUser(null);
+          return;
         }
+        const name =
+          (sUser.user_metadata?.name as string | undefined) ||
+          (sUser.user_metadata?.full_name as string | undefined) ||
+          sUser.email.split("@")[0];
+        const userId = sUser.id;
+        const email = sUser.email;
+        setUser({ name, email });
+        // Profile reads must not run inside this callback, or sign-in waits on them.
+        setTimeout(() => {
+          void (async () => {
+            const role = await fetchRole(userId);
+            if (role) setUser((current) => (current?.email === email ? { ...current, role } : current));
+            await upsertProfile(userId, name, email);
+          })();
+        }, 0);
       });
 
       return () => {
@@ -102,25 +110,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     if (supabase) {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      const { data } = await supabase.auth.getUser();
       const sUser = data.user;
       if (sUser?.email) {
         const name =
           (sUser.user_metadata?.name as string | undefined) ||
           (sUser.user_metadata?.full_name as string | undefined) ||
           sUser.email.split("@")[0];
-        const role = await (async () => {
-          try {
-            const { data } = await supabase.from("profiles").select("role").eq("id", sUser.id).single();
-            return data?.role as string | undefined;
-          } catch {
-            return undefined;
-          }
-        })();
-        setUser({ name, email: sUser.email, role });
-        try { await supabase.from("profiles").upsert({ id: sUser.id, name, email: sUser.email }, { onConflict: "id" }); } catch {}
+        setUser({ name, email: sUser.email });
       }
       return;
     }
@@ -145,7 +143,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data.user?.email && data.session) {
         setUser({ name, email: data.user.email });
       }
-      try { await sendWelcome(name, email); } catch {}
+      void sendWelcome(name, email).catch(() => {});
       return;
     }
     // Fallback demo
