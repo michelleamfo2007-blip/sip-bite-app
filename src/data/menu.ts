@@ -31,7 +31,7 @@ export const menuData = {
     { id: "r4", name: "Fries", price: 40, description: "Golden crispy potato fries", image: friesImg },
   ],
   chicken: [
-    { id: "r5", name: "Chicken, 3 pieces", price: 50, description: "Three pieces of crispy fried chicken", image: chicken3Img, popular: true },
+    { id: "r5", name: "Chicken, 3 pieces", price: 50, description: "Three pieces of crispy fried chicken", image: chicken3Img },
     { id: "r6", name: "Chicken, 5 pieces", price: 80, description: "Five pieces of crispy fried chicken", image: chicken5Img },
   ],
   snacks: [
