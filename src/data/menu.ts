@@ -41,8 +41,8 @@ export const menuData = {
   packages: [
     { id: "p1", name: "Fries + 2 chicken pieces", price: 50, description: "Fries with two pieces of chicken", image: fries2ChickenImg, tag: "Combo" },
     { id: "p2", name: "Fries, 3 chicken & drink", price: 80, description: "Fries, three chicken pieces, and a drink", image: fries3ChickenDrinkImg, tag: "Combo", options: drinkOptions },
-    { id: "p3", name: "Samosas, 2 chicken & drink", price: 50, description: "Samosas, two pieces of chicken, and a drink", image: samosaChickenDrinkImg, tag: "Combo", options: drinkOptions },
-    { id: "p4", name: "Spring rolls, 2 chicken & drink", price: 50, description: "Spring rolls, two pieces of chicken, and a drink", image: springrollChickenDrinkImg, tag: "Combo", options: drinkOptions },
+    { id: "p3", name: "Samosas, 2 chicken & drink", price: 50, description: "Three samosas, two pieces of chicken, and a drink", image: samosaChickenDrinkImg, tag: "Combo", options: drinkOptions },
+    { id: "p4", name: "Spring rolls, 2 chicken & drink", price: 50, description: "Three spring rolls, two pieces of chicken, and a drink", image: springrollChickenDrinkImg, tag: "Combo", options: drinkOptions },
     { id: "p5", name: "Fries, samosas, 3 chicken & drink", price: 100, description: "Fries, samosas, three chicken pieces, and a drink", image: samosa3ChickenDrinkImg, tag: "Combo", options: drinkOptions },
     { id: "p6", name: "Fries, spring rolls, 3 chicken & drink", price: 100, description: "Fries, spring rolls, three chicken pieces, and a drink", image: springroll3ChickenDrinkImg, tag: "Combo", options: drinkOptions },
   ],

@@ -7,7 +7,7 @@ import { User } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function AuthDialogButton() {
-  const { user, login, register, logout, loginWithProvider, resetPassword } = useAuth();
+  const { user, login, register, logout, resetPassword } = useAuth();
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -33,20 +33,6 @@ export default function AuthDialogButton() {
       }
     } catch (err: any) {
       setError(err?.message || "Authentication failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOAuth = async (provider: "google" | "github") => {
-    try {
-      setLoading(true);
-      setError("");
-      setMessage("");
-      await loginWithProvider(provider);
-      // Supabase will redirect; dialog can remain closed/open depending on redirect
-    } catch (err: any) {
-      setError(err?.message || "Failed to authenticate.");
     } finally {
       setLoading(false);
     }
@@ -117,26 +103,10 @@ export default function AuthDialogButton() {
             {user
               ? "Manage your account or sign out."
               : mode === "login"
-              ? "Welcome back! Sign in to continue."
-              : "Create an account to save your details and speed up checkout."}
+              ? "Sign in with your email and password."
+              : "Create your account with your name, email, and a password."}
           </DialogDescription>
         </DialogHeader>
-
-        {!user && (
-          <div className="space-y-2 mb-4">
-            <Button disabled={loading} onClick={() => handleOAuth("google")} className="w-full justify-center bg-slate-900 text-white hover:bg-slate-800">
-              Continue with Google
-            </Button>
-            <Button disabled={loading} onClick={() => handleOAuth("github")} variant="outline" className="w-full justify-center">
-              Continue with GitHub
-            </Button>
-            <div className="flex items-center gap-2 py-1">
-              <div className="h-px bg-slate-200 flex-1" />
-              <span className="text-[10px] uppercase tracking-widest text-slate-400">or</span>
-              <div className="h-px bg-slate-200 flex-1" />
-            </div>
-          </div>
-        )}
 
         {user ? (
           <div className="space-y-4">

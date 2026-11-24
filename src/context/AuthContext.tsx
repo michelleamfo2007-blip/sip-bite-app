@@ -11,7 +11,6 @@ type AuthContextType = {
   user: User | null;
   login: (email: string, password: string) => Promise<void> | void;
   register: (name: string, email: string, password: string) => Promise<void> | void;
-  loginWithProvider: (provider: "google" | "github") => Promise<void> | void;
   resetPassword: (email: string) => Promise<void> | void;
   sendWelcomeEmail: (name: string, email: string) => Promise<void> | void;
   logout: () => Promise<void> | void;
@@ -153,15 +152,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser({ name, email, role: "customer" });
   };
 
-  const loginWithProvider = async (provider: "google" | "github") => {
-    if (!supabase) return;
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: { redirectTo: SITE_URL },
-    });
-    if (error) throw error;
-  };
-
   const resetPassword = async (email: string) => {
     if (!supabase) return;
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -182,7 +172,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, loginWithProvider, resetPassword, sendWelcomeEmail, logout }}>
+    <AuthContext.Provider value={{ user, login, register, resetPassword, sendWelcomeEmail, logout }}>
       {children}
     </AuthContext.Provider>
   );
