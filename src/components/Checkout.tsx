@@ -41,9 +41,11 @@ function formatOrderDate(isoDate: string) {
 const SHOP_LOCATION = "Achimota, Accra, Ghana";
 const SHOP_PHONE = "053 785 8896";
 const SHOP_PHONE_TEL = "0537858896";
+const SHOP_PHONE_2 = "025 633 1397";
+const SHOP_PHONE_2_TEL = "0256331397";
 const MOMO_NAME = "Michelle Amfo";
 const MOMO_NUMBER = "054 978 9315";
-const RIDER_DETAILS = `Sip & Bite\nCollect from ${SHOP_LOCATION}\nCall ${SHOP_PHONE}\nhttps://maps.google.com/?q=Achimota,Accra,Ghana`;
+const RIDER_DETAILS = `Sip & Bite\nCollect from ${SHOP_LOCATION}\nCall ${SHOP_PHONE}\nCall ${SHOP_PHONE_2}\nhttps://maps.google.com/?q=Achimota,Accra,Ghana`;
 
 function ShopDetails({ forRider }: { forRider: boolean }) {
   const shareHref = `https://wa.me/?text=${encodeURIComponent(RIDER_DETAILS)}`;
@@ -57,6 +59,7 @@ function ShopDetails({ forRider }: { forRider: boolean }) {
       </p>
       <p className="mt-4 text-sm font-bold text-brand-dark">{SHOP_LOCATION}</p>
       <a href={`tel:${SHOP_PHONE_TEL}`} className="mt-1 block text-sm font-bold text-brand-red">{SHOP_PHONE}</a>
+      <a href={`tel:${SHOP_PHONE_2_TEL}`} className="mt-1 block text-sm font-bold text-brand-red">{SHOP_PHONE_2}</a>
       <a
         href={shareHref}
         target="_blank"

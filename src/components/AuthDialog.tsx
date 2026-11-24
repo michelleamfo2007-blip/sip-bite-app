@@ -14,7 +14,7 @@ const orderStatusLabel: Record<OrderStatus, string> = {
   done: "Collected",
 };
 
-export default function AuthDialogButton() {
+export default function AuthDialogButton({ compact = false }: { compact?: boolean }) {
   const { user, login, register, logout, resetPassword } = useAuth();
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -111,11 +111,13 @@ export default function AuthDialogButton() {
         <div className="relative" ref={menuRef}>
           <button
             type="button"
-            className="inline-flex items-center gap-2 text-brand-dark hover:text-brand-red font-medium"
+            className={compact ? "inline-flex h-10 w-10 items-center justify-center text-brand-dark hover:text-brand-red" : "inline-flex items-center gap-2 text-brand-dark hover:text-brand-red font-medium"}
             onClick={() => setMenuOpen((v) => !v)}
           >
-            <span>Hi, {user.name.split(" ")[0]}</span>
-            <svg className={`w-4 h-4 transition-transform ${menuOpen ? "rotate-180" : ""}`} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.188l3.71-3.957a.75.75 0 111.08 1.04l-4.25 4.53a.75.75 0 01-1.08 0l-4.25-4.53a.75.75 0 01.02-1.06z" clipRule="evenodd" /></svg>
+            {compact ? <User className="h-5 w-5" /> : <span>Hi, {user.name.split(" ")[0]}</span>}
+            {compact ? <span className="sr-only">Hi, {user.name.split(" ")[0]}</span> : (
+              <svg className={`w-4 h-4 transition-transform ${menuOpen ? "rotate-180" : ""}`} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.188l3.71-3.957a.75.75 0 111.08 1.04l-4.25 4.53a.75.75 0 01-1.08 0l-4.25-4.53a.75.75 0 01.02-1.06z" clipRule="evenodd" /></svg>
+            )}
           </button>
           {menuOpen && (
             <div className="absolute right-0 mt-2 w-40 bg-white text-slate-700 rounded-xl shadow-lg border border-slate-100 py-2 z-50">

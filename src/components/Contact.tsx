@@ -26,7 +26,7 @@ export default function Contact({ compact = false }: { compact?: boolean }) {
           </div>
           <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-1">
             <Info label="Location" value="Achimota, Accra, Ghana" />
-            <Info label="Phone" value="053 785 8896" href="tel:0537858896" />
+            <Info label="Phone" value="053 785 8896" href="tel:0537858896" extra={{ value: "025 633 1397", href: "tel:0256331397" }} />
             <Info label="Hours" value="10am – 11pm" />
           </div>
         </div>
@@ -49,7 +49,7 @@ export default function Contact({ compact = false }: { compact?: boolean }) {
 
       <section id="contact" className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-3">
         <Info label="Location" value="Achimota, Accra, Ghana" />
-        <Info label="Phone" value="053 785 8896" href="tel:0537858896" />
+        <Info label="Phone" value="053 785 8896" href="tel:0537858896" extra={{ value: "025 633 1397", href: "tel:0256331397" }} />
         <Info label="Hours" value="Daily, 10am – 11pm" />
       </section>
 
@@ -84,7 +84,10 @@ export default function Contact({ compact = false }: { compact?: boolean }) {
             Order on WhatsApp
           </a>
           <a href="tel:0537858896" className="inline-flex h-14 items-center justify-center border border-brand-dark/20 text-[11px] uppercase tracking-[0.28em]">
-            Call the house
+            Call 053 785 8896
+          </a>
+          <a href="tel:0256331397" className="inline-flex h-14 items-center justify-center border border-brand-dark/20 text-[11px] uppercase tracking-[0.28em]">
+            Call 025 633 1397
           </a>
           <iframe
             title="Achimota, Accra Map"
@@ -120,7 +123,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-function Info({ label, value, href }: { label: string; value: string; href?: string }) {
+function Info({ label, value, href, extra }: { label: string; value: string; href?: string; extra?: { value: string; href: string } }) {
   return (
     <div className="flex items-start gap-3">
       <span className="mt-1 block h-px w-8 bg-brand-yellow" />
@@ -131,6 +134,7 @@ function Info({ label, value, href }: { label: string; value: string; href?: str
         ) : (
           <p className="mt-1 text-base font-medium">{value}</p>
         )}
+        {extra && <a href={extra.href} className="block text-base font-medium hover:text-brand-red">{extra.value}</a>}
       </div>
     </div>
   );

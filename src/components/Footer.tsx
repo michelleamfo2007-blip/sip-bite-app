@@ -20,6 +20,9 @@ export default function Footer() {
           <a href="tel:0537858896" className="mt-1 block text-sm text-white/75 hover:text-white">
             053 785 8896
           </a>
+          <a href="tel:0256331397" className="mt-1 block text-sm text-white/75 hover:text-white">
+            025 633 1397
+          </a>
           <p className="mt-1 text-sm text-white/75">Daily, 10am – 11pm</p>
         </div>
         <div>

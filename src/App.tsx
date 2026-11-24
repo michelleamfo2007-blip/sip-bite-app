@@ -11,6 +11,7 @@ import Checkout from "./components/Checkout";
 import MenuDetail from "./components/MenuDetail";
 import ResetPassword from "./components/ResetPassword";
 import Admin from "./components/Admin";
+import Flyer from "./components/Flyer";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter as Router, Routes, Route, useLocation, Link } from "react-router-dom";
@@ -54,6 +55,7 @@ function AnimatedRoutes() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/flyer" element={<Flyer />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
@@ -165,33 +167,40 @@ function HomePage() {
   );
 }
 
-export default function App() {
+function Frame() {
+  const { pathname } = useLocation();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
     restDelta: 0.001
   });
+  const flyer = pathname === "/flyer";
 
+  return (
+    <div className="min-h-screen flex flex-col bg-brand-cream text-brand-dark selection:bg-brand-yellow selection:text-brand-dark">
+      {!flyer && (
+        <motion.div
+          className="fixed top-0 left-0 right-0 h-px bg-brand-yellow z-[60] origin-left"
+          style={{ scaleX }}
+        />
+      )}
+      {!flyer && <Navbar />}
+      <main className="flex-grow">
+        <AnimatedRoutes />
+      </main>
+      {!flyer && <Footer />}
+    </div>
+  );
+}
+
+export default function App() {
   return (
     <CartProvider>
       <AuthProvider>
         <Router>
           <ScrollToTop />
-          <div className="min-h-screen flex flex-col bg-brand-cream text-brand-dark selection:bg-brand-yellow selection:text-brand-dark">
-            <motion.div
-              className="fixed top-0 left-0 right-0 h-px bg-brand-yellow z-[60] origin-left"
-              style={{ scaleX }}
-            />
-            
-            <Navbar />
-            
-            <main className="flex-grow">
-              <AnimatedRoutes />
-            </main>
-            
-            <Footer />
-          </div>
+          <Frame />
         </Router>
       </AuthProvider>
     </CartProvider>

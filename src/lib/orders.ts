@@ -114,7 +114,7 @@ export async function sendPreparingNotice(order: HouseOrder) {
     "",
     "Sip & Bite",
     "Achimota, Accra, Ghana",
-    "Call 053 785 8896",
+    "Call 053 785 8896 or 025 633 1397",
     "",
     `Order ${order.id.slice(0, 8).toUpperCase()}: ${items}`,
   ].join("\n");
@@ -137,7 +137,7 @@ export async function sendReadyNotice(order: HouseOrder) {
     "",
     "Sip & Bite",
     "Achimota, Accra, Ghana",
-    "Call 053 785 8896",
+    "Call 053 785 8896 or 025 633 1397",
     "https://maps.google.com/?q=Achimota,Accra,Ghana",
     "",
     `Order ${order.id.slice(0, 8).toUpperCase()}: ${items}`,

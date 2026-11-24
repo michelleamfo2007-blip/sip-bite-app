@@ -21,10 +21,10 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-brand-dark/10 bg-brand-cream/90 text-brand-dark backdrop-blur-md">
-      <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-3">
-          <img src={logo} alt="" className="h-12 w-12 rounded-full object-cover" />
-          <span className="font-display text-2xl font-medium tracking-wide">Sip & Bite</span>
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 md:h-[72px] md:px-6">
+        <Link to="/" className="flex min-w-0 items-center gap-2 md:gap-3">
+          <img src={logo} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover md:h-12 md:w-12" />
+          <span className="truncate font-display text-xl font-medium tracking-wide md:text-2xl">Sip & Bite</span>
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">
@@ -64,9 +64,9 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 md:hidden">
-          <AuthDialogButton />
-          <Cart />
+        <div className="flex shrink-0 items-center gap-1 md:hidden">
+          <AuthDialogButton compact />
+          <Cart compact />
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger render={<Button variant="ghost" size="icon" className="text-brand-dark" />}>
               <Menu className="h-6 w-6" />

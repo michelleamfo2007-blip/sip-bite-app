@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Trash2, Plus, Minus } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
-export default function Cart() {
+export default function Cart({ compact = false }: { compact?: boolean }) {
   const { cart, removeFromCart, updateQuantity, totalPrice, totalItems } = useCart();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
@@ -16,9 +16,9 @@ export default function Cart() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger render={<Button id="cart-button" variant="outline" className="relative h-10 rounded-full border-black/10 bg-white px-4 font-medium text-brand-dark hover:bg-brand-dark hover:text-white" /> }>
-        <ShoppingCart className="mr-2 h-4 w-4" />
-        Cart
+      <SheetTrigger render={<Button id="cart-button" variant="outline" className={compact ? "relative h-10 w-10 rounded-full border-black/10 bg-white p-0 text-brand-dark hover:bg-brand-dark hover:text-white" : "relative h-10 rounded-full border-black/10 bg-white px-4 font-medium text-brand-dark hover:bg-brand-dark hover:text-white"} /> }>
+        <ShoppingCart className={compact ? "h-4 w-4" : "mr-2 h-4 w-4"} />
+        {compact ? <span className="sr-only">Cart</span> : "Cart"}
         {totalItems > 0 && (
           <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-brand-cream bg-brand-red text-[10px] font-semibold text-white">
             {totalItems}
