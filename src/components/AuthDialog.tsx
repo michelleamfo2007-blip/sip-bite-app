@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ export default function AuthDialogButton() {
   const { user, login, register, logout, resetPassword } = useAuth();
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<"login" | "register">("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,6 +39,22 @@ export default function AuthDialogButton() {
     }
   };
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) setMenuOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [menuOpen]);
+
   const handleReset = async () => {
     try {
       if (!email) {
@@ -58,7 +75,7 @@ export default function AuthDialogButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {user ? (
-        <div className="relative" onMouseLeave={() => setMenuOpen(false)}>
+        <div className="relative" ref={menuRef}>
           <button
             type="button"
             className="inline-flex items-center gap-2 text-brand-dark hover:text-brand-red font-medium"

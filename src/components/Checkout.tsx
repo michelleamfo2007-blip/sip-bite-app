@@ -7,7 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { placeOrder } from "@/lib/orders";
 import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { ArrowLeft, Bike, Store, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Banknote, Bike, Smartphone, Store, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 function todayInputValue() {
@@ -91,6 +91,7 @@ export default function Checkout() {
   const [orderDate, setOrderDate] = useState(todayInputValue);
   const [place, setPlace] = useState("");
   const [orderTime, setOrderTime] = useState("");
+  const [payment, setPayment] = useState<"" | "cash" | "momo">("");
   const [orderError, setOrderError] = useState("");
   const [orderId, setOrderId] = useState("");
   const [receipt, setReceipt] = useState("");
@@ -108,6 +109,11 @@ export default function Checkout() {
   const receiptLine = placeLabel && timeLabel
     ? `You will receive it on ${dateLabel} at ${placeLabel} at ${timeLabel}.`
     : "";
+  const paymentLabel = payment === "cash"
+    ? "cash when it is collected"
+    : payment === "momo"
+    ? `mobile money to ${SHOP_PHONE}`
+    : "";
 
   const handleOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,14 +122,19 @@ export default function Checkout() {
       setOrderError("Add the day, the place, and the time.");
       return;
     }
+    if (!paymentLabel) {
+      setOrderError("Choose cash or mobile money.");
+      return;
+    }
     setIsProcessing(true);
-    const placedMessage = `Your order has been successfully placed. ${receiptLine}`;
+    const paymentSentence = `Pay GH₵ ${total} by ${paymentLabel}.`;
+    const placedMessage = `Your order has been successfully placed. ${paymentSentence} ${receiptLine}`;
     try {
       const id = await placeOrder({
         customer_name: name.trim(),
         phone: phone.trim(),
         order_type: "pickup",
-        address: `${collectionLabel}. ${dateLabel} at ${placeLabel} at ${timeLabel}`,
+        address: `${collectionLabel}. ${dateLabel} at ${placeLabel} at ${timeLabel}. Pay by ${paymentLabel}`,
         items: cart.map((item) => ({
           name: item.name,
           quantity: item.quantity,
@@ -144,7 +155,7 @@ export default function Checkout() {
           await fetch("/api/send-order-email", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ to: recipient, name: name.trim(), message: receiptLine }),
+            body: JSON.stringify({ to: recipient, name: name.trim(), message: `${paymentSentence} ${receiptLine}` }),
           });
         } catch {}
       }
@@ -250,17 +261,32 @@ export default function Checkout() {
                   <span className="bg-brand-red text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span>
                   Payment
                 </h2>
-                <div className="bg-slate-50 p-6 rounded-2xl border-2 border-brand-red mb-6">
-                  <p className="font-bold text-brand-dark">Pay when the order is collected</p>
-                  <p className="mt-1 text-sm text-slate-500">Placing the order sends it to the kitchen. No card is charged on this page.</p>
-                </div>
+                <RadioGroup value={payment} onValueChange={(value) => setPayment(value as "cash" | "momo")} className="grid grid-cols-1 gap-4 sm:grid-cols-2 mb-6">
+                  <div className="flex items-center space-x-2 bg-slate-50 p-6 rounded-2xl border-2 border-transparent has-[:checked]:border-brand-red transition-all cursor-pointer">
+                    <RadioGroupItem value="cash" id="pay-cash" className="text-brand-red" />
+                    <Label htmlFor="pay-cash" className="font-bold cursor-pointer flex items-center gap-2">
+                      <Banknote className="w-4 h-4" /> Cash
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 bg-slate-50 p-6 rounded-2xl border-2 border-transparent has-[:checked]:border-brand-red transition-all cursor-pointer">
+                    <RadioGroupItem value="momo" id="pay-momo" className="text-brand-red" />
+                    <Label htmlFor="pay-momo" className="font-bold cursor-pointer flex items-center gap-2">
+                      <Smartphone className="w-4 h-4" /> Mobile money
+                    </Label>
+                  </div>
+                </RadioGroup>
+                <p className="mb-6 text-sm text-slate-500">
+                  {payment === "cash" && `Pay GH₵ ${total} in cash when the order is collected.`}
+                  {payment === "momo" && `Send GH₵ ${total} to ${SHOP_PHONE} before the order is collected.`}
+                  {!payment && "Choose cash or mobile money. The order is placed after you pick one."}
+                </p>
                 {orderError && <p className="mb-4 text-sm font-bold text-red-600">{orderError}</p>}
                 <Button 
                   type="submit" 
-                  disabled={isProcessing || cart.length === 0}
+                  disabled={isProcessing || cart.length === 0 || !payment}
                   className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-8 rounded-2xl text-xl uppercase shadow-xl shadow-brand-red/20"
                 >
-                  {isProcessing ? "Sending..." : `Place order · GH₵ ${total}`}
+                  {isProcessing ? "Sending..." : payment ? `Place order · GH₵ ${total}` : "Choose how to pay"}
                 </Button>
               </div>
             </form>
@@ -290,6 +316,10 @@ export default function Checkout() {
               <div className="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-widest">
                 <span>Collection</span>
                 <span className="normal-case tracking-normal">{collectionLabel}</span>
+              </div>
+              <div className="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-widest">
+                <span>Payment</span>
+                <span className="normal-case tracking-normal">{payment === "momo" ? "Mobile money" : payment === "cash" ? "Cash" : "Choose one"}</span>
               </div>
               <div className="flex justify-between text-xl font-black text-brand-dark uppercase tracking-tighter pt-2">
                 <span>Total</span>
