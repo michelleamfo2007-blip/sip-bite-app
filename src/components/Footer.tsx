@@ -1,13 +1,17 @@
 import { Link } from "react-router-dom";
+import logo from "../../images/logo.jpg";
 
 export default function Footer() {
   return (
     <footer className="bg-brand-dark text-brand-cream">
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-4">
         <div className="md:col-span-2">
-          <p className="font-display text-4xl font-medium">Sip & Bite</p>
+          <div className="flex items-center gap-4">
+            <img src={logo} alt="" className="h-16 w-16 rounded-full object-cover" />
+            <p className="font-display text-4xl font-medium">Sip & Bite</p>
+          </div>
           <p className="mt-4 max-w-sm text-sm font-light leading-relaxed text-white/60">
-            A small grill house in Achimota. Chicken, kebabs, and fries, finished to order.
+            A grill house in Achimota. Chicken, sausage kebabs, and fries, cooked to order.
           </p>
         </div>
         <div>

@@ -20,6 +20,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const STORAGE_KEY = "auth:user";
+const SITE_URL = "https://www.sipandbite.site";
 
 async function sendWelcome(name: string, email: string) {
   await fetch("/api/send-welcome-email", {
@@ -136,7 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password,
         options: {
           data: { name },
-          emailRedirectTo: window.location.origin,
+          emailRedirectTo: SITE_URL,
         },
       });
       if (error) throw error;
@@ -156,7 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!supabase) return;
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: window.location.origin },
+      options: { redirectTo: SITE_URL },
     });
     if (error) throw error;
   };
@@ -164,7 +165,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const resetPassword = async (email: string) => {
     if (!supabase) return;
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + "/reset-password",
+      redirectTo: `${SITE_URL}/reset-password`,
     });
     if (error) throw error;
   };

@@ -140,11 +140,11 @@ function MenuItem({ item, isDrinks }: MenuItemProps) {
       transition={{ type: 'spring', stiffness: 300, damping: 20, mass: 0.5 }}
       className="group overflow-hidden border border-brand-dark/10 bg-brand-white"
     >
-      <Link to={`/menu/${item.id}`} className={`block w-full overflow-hidden ${isDrinks ? 'h-44 bg-white' : 'h-48'}`}>
+      <Link to={`/menu/${item.id}`} className={`block w-full overflow-hidden bg-white ${isDrinks ? "h-56" : "h-48"}`}>
         <img
           src={item.image}
           alt={item.name}
-          className="h-full w-full transform-gpu object-cover transition-transform duration-500 group-hover:scale-105"
+          className={`h-full w-full transform-gpu transition-transform duration-500 group-hover:scale-105 ${isDrinks ? "object-contain p-4" : "object-cover"}`}
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Image';
           }}

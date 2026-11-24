@@ -17,7 +17,7 @@ const testimonials = [
   {
     name: "Esi Appiah",
     role: "Cantonments",
-    content: "Honest portions. The three samosas are the thing I tell people to start with.",
+    content: "Honest portions. The four samosas are the plate I tell people to start with.",
   },
 ];
 

@@ -1,8 +1,52 @@
 -- Run this once in the Supabase SQL editor.
--- Then make your own account an admin:
+-- After you sign up on the site, make that account the kitchen admin:
 --   update public.profiles set role = 'admin' where email = 'you@example.com';
 
+create table if not exists public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  name text,
+  email text,
+  role text not null default 'customer',
+  created_at timestamptz not null default now()
+);
+
 alter table public.profiles add column if not exists role text default 'customer';
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role = 'admin'
+  );
+$$;
+
+alter table public.profiles enable row level security;
+
+grant select, insert, update on public.profiles to authenticated;
+
+drop policy if exists "read own or admin profiles" on public.profiles;
+create policy "read own or admin profiles"
+on public.profiles for select
+to authenticated
+using (id = auth.uid() or public.is_admin());
+
+drop policy if exists "insert own profile" on public.profiles;
+create policy "insert own profile"
+on public.profiles for insert
+to authenticated
+with check (id = auth.uid());
+
+drop policy if exists "update own profile" on public.profiles;
+create policy "update own profile"
+on public.profiles for update
+to authenticated
+using (id = auth.uid() or public.is_admin())
+with check (id = auth.uid() or public.is_admin());
 
 create table if not exists public.orders (
   id uuid primary key default gen_random_uuid(),
@@ -33,26 +77,11 @@ drop policy if exists "admins can read orders" on public.orders;
 create policy "admins can read orders"
 on public.orders for select
 to authenticated
-using (
-  exists (
-    select 1 from public.profiles
-    where profiles.id = auth.uid() and profiles.role = 'admin'
-  )
-);
+using (public.is_admin());
 
 drop policy if exists "admins can update orders" on public.orders;
 create policy "admins can update orders"
 on public.orders for update
 to authenticated
-using (
-  exists (
-    select 1 from public.profiles
-    where profiles.id = auth.uid() and profiles.role = 'admin'
-  )
-)
-with check (
-  exists (
-    select 1 from public.profiles
-    where profiles.id = auth.uid() and profiles.role = 'admin'
-  )
-);
+using (public.is_admin())
+with check (public.is_admin());

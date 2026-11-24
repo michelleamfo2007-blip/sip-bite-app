@@ -133,7 +133,7 @@ export default function MenuDetail() {
             className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-black py-6 rounded-full uppercase"
             onClick={handleAdd}
           >
-            Customise and order
+            Add to the order
           </Button>
         </div>
       </div>

@@ -23,6 +23,11 @@ Deno.serve(async (req: Request) => {
 
   const recipient = (payload?.to || payload?.email || "").trim();
   const name = (payload?.name || "there").trim();
+  const safeName = name
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
   if (!recipient) {
     return new Response(JSON.stringify({ error: "email_required" }), {
       status: 400,
@@ -43,8 +48,8 @@ Deno.serve(async (req: Request) => {
   }
 
   const subject = "Welcome to Sip & Bite";
-  const text = `Hi ${name},\n\nThanks for joining Sip & Bite! We're excited to have you.\n\nYou can now sign in anytime to manage your account and speed up checkout.\n\nCheers,\nSip & Bite`;
-  const html = `<!DOCTYPE html><html><body style=\"font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif\"><div style=\"max-width:560px;margin:0 auto;padding:24px\"><h1 style=\"margin:0 0 12px;font-size:22px\">Welcome to Sip & Bite</h1><p style=\"margin:0 0 16px\">Hi ${name},</p><p style=\"margin:0 0 16px\">Thanks for joining <strong>Sip & Bite</strong>! We're excited to have you.</p><p style=\"margin:0 0 16px\">You can now sign in anytime to manage your account and speed up checkout.</p><p style=\"margin:24px 0 0;color:#64748b;font-size:12px\">Cheers,<br/>Sip & Bite</p></div></body></html>`;
+  const text = `Dear ${name},\n\nWelcome to Sip & Bite.\n\nIt is a pleasure to have you with us. From our grill in Achimota, each plate is cooked to order: chicken, sausage kebabs, and fries, finished while they are still hot.\n\nSign in whenever you return. Your name will be waiting, and the next order will take only a moment.\n\nWith care,\nSip & Bite\nAchimota, Accra`;
+  const html = `<!DOCTYPE html><html><body style="margin:0;background:#E7F0EA"><div style="max-width:560px;margin:0 auto;padding:48px 28px;font-family:Georgia,'Times New Roman',serif;color:#0B1F1A"><p style="margin:0;font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:#C4892A">Achimota</p><h1 style="margin:16px 0 0;font-weight:500;font-size:36px;line-height:1.1">Welcome to Sip &amp; Bite.</h1><p style="margin:28px 0 0;font-size:17px;line-height:1.6">Dear ${safeName},</p><p style="margin:16px 0 0;font-size:17px;line-height:1.7">It is a pleasure to have you with us. From our grill in Achimota, each plate is cooked to order: chicken, sausage kebabs, and fries, finished while they are still hot.</p><p style="margin:16px 0 0;font-size:17px;line-height:1.7">Sign in whenever you return. Your name will be waiting, and the next order will take only a moment.</p><p style="margin:36px 0 0;font-size:17px;line-height:1.6">With care,<br/>Sip &amp; Bite</p></div></body></html>`;
 
   const from = FROM_EMAIL.includes("<") ? FROM_EMAIL : `${FROM_NAME} <${FROM_EMAIL}>`;
   const body: Record<string, unknown> = {

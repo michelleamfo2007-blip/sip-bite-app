@@ -61,8 +61,8 @@ function AnimatedRoutes() {
 const specials = [
   { name: "Fries + 2 chicken pieces", price: "GH₵50", image: fries2ChickenImg, note: "Combo" },
   { name: "Fries, 3 chicken & drink", price: "GH₵80", image: fries3ChickenDrinkImg, note: "Combo" },
-  { name: "Samosas, chicken & drink", price: "GH₵50", image: samosaChickenDrinkImg, note: "Combo" },
-  { name: "Spring rolls, chicken & drink", price: "GH₵50", image: springrollChickenDrinkImg, note: "Combo" },
+  { name: "Samosas, 2 chicken & drink", price: "GH₵50", image: samosaChickenDrinkImg, note: "Combo" },
+  { name: "Spring rolls, 2 chicken & drink", price: "GH₵50", image: springrollChickenDrinkImg, note: "Combo" },
 ];
 
 const reasons = [
@@ -157,19 +157,6 @@ function HomePage() {
       </section>
 
       <Testimonials />
-
-      <section className="mx-auto max-w-6xl px-6 py-20">
-        <div className="border border-brand-yellow/40 bg-brand-dark px-8 py-16 text-brand-cream md:px-14">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-brand-yellow">A courtesy</p>
-          <h2 className="mt-4 max-w-xl font-display text-5xl font-medium md:text-6xl">Ten percent off the first order.</h2>
-          <p className="mt-5 text-sm font-light tracking-wide text-white/70">
-            Mention <span className="text-brand-yellow">SIPBITE10</span> when you write to us.
-          </p>
-          <Link to="/menu#promotions" className="mt-8 inline-flex border border-brand-yellow px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-brand-yellow">
-            Order now
-          </Link>
-        </div>
-      </section>
 
       <Contact compact />
     </div>

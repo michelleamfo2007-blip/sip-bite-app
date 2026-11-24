@@ -6,6 +6,7 @@ import { Link, NavLink } from "react-router-dom";
 import Cart from "./Cart";
 import AuthDialogButton from "./AuthDialog";
 import { useAuth } from "@/context/AuthContext";
+import logo from "../../images/logo.jpg";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -21,8 +22,9 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-brand-dark/10 bg-brand-cream/90 text-brand-dark backdrop-blur-md">
       <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-6">
-        <Link to="/" className="font-display text-2xl font-medium tracking-wide">
-          Sip & Bite
+        <Link to="/" className="flex items-center gap-3">
+          <img src={logo} alt="" className="h-12 w-12 rounded-full object-cover" />
+          <span className="font-display text-2xl font-medium tracking-wide">Sip & Bite</span>
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">
@@ -71,7 +73,10 @@ export default function Navbar() {
             </SheetTrigger>
             <SheetContent side="right" className="gap-0 border-none bg-brand-cream px-6 pb-8 pt-6 text-brand-dark">
               <SheetHeader className="p-0 pr-10">
-                <SheetTitle className="text-left font-display text-2xl font-medium text-brand-dark">Sip & Bite</SheetTitle>
+                <SheetTitle className="flex items-center gap-3 text-left font-display text-2xl font-medium text-brand-dark">
+                  <img src={logo} alt="" className="h-10 w-10 rounded-full object-cover" />
+                  Sip & Bite
+                </SheetTitle>
               </SheetHeader>
               <div className="mt-10 flex flex-col gap-5">
                 {navLinks.map((link) => (

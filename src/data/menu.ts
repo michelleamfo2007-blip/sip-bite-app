@@ -8,9 +8,9 @@ import fries2ChickenImg from "../../images/menu/fries-2-chicken.jpg";
 import fries3ChickenDrinkImg from "../../images/menu/fries-3-chicken-drink.jpg";
 import samosaChickenDrinkImg from "../../images/menu/samosa-chicken-drink.jpg";
 import springrollChickenDrinkImg from "../../images/menu/springroll-chicken-drink.jpg";
-import fantaImg from "../../images/menu/drink-fanta.jpg";
-import cokeImg from "../../images/menu/drink-coke.jpg";
-import spriteImg from "../../images/menu/drink-sprite.jpg";
+import fantaImg from "../../images/fanta.jpeg";
+import cokeImg from "../../images/coke.jpeg";
+import spriteImg from "../../images/sprite.jpeg";
 import juiceImg from "../../images/menu/drink-juice.jpg";
 
 const drinkOptions = ["Coke", "Fanta", "Sprite", "Juice"];
@@ -23,7 +23,7 @@ export const menuData = {
     { id: "d5", name: "Juice", price: 10, image: juiceImg },
   ],
   kebab: [
-    { id: "r3", name: "Sausage Kebab", price: 20, description: "Grilled beef sausage with spices", image: sausageImg },
+    { id: "r3", name: "Sausage Kebab", price: 20, description: "Grilled sausage on a stick, served in the cup", image: sausageImg },
   ],
   fries: [
     { id: "r4", name: "Fries", price: 40, description: "Golden crispy potato fries", image: friesImg },
@@ -33,13 +33,13 @@ export const menuData = {
     { id: "r6", name: "Chicken, 5 pieces", price: 80, description: "Five pieces of crispy fried chicken", image: chicken5Img },
   ],
   snacks: [
-    { id: "s1", name: "Samosa, 3 pieces", price: 25, description: "Three fried pastries with a savory filling", image: samosaImg },
-    { id: "s2", name: "Spring rolls, 3 pieces", price: 25, description: "Three crispy rolls", image: springRollImg },
+    { id: "s1", name: "Samosa, 4 pieces", price: 25, description: "Four samosas", image: samosaImg },
+    { id: "s2", name: "Spring rolls, 4 pieces", price: 25, description: "Four spring rolls", image: springRollImg },
   ],
   packages: [
     { id: "p1", name: "Fries + 2 chicken pieces", price: 50, description: "Fries with two pieces of chicken", image: fries2ChickenImg, tag: "Combo" },
     { id: "p2", name: "Fries, 3 chicken & drink", price: 80, description: "Fries, three chicken pieces, and a drink", image: fries3ChickenDrinkImg, tag: "Combo", options: drinkOptions },
-    { id: "p3", name: "Samosas, chicken & drink", price: 50, description: "Samosas, one piece of chicken, and a drink", image: samosaChickenDrinkImg, tag: "Combo", options: drinkOptions },
-    { id: "p4", name: "Spring rolls, chicken & drink", price: 50, description: "Spring rolls, one piece of chicken, and a drink", image: springrollChickenDrinkImg, tag: "Combo", options: drinkOptions },
+    { id: "p3", name: "Samosas, 2 chicken & drink", price: 50, description: "Samosas, two pieces of chicken, and a drink", image: samosaChickenDrinkImg, tag: "Combo", options: drinkOptions },
+    { id: "p4", name: "Spring rolls, 2 chicken & drink", price: 50, description: "Spring rolls, two pieces of chicken, and a drink", image: springrollChickenDrinkImg, tag: "Combo", options: drinkOptions },
   ],
 };
