@@ -12,6 +12,7 @@ import MenuDetail from "./components/MenuDetail";
 import ResetPassword from "./components/ResetPassword";
 import Admin from "./components/Admin";
 import Flyer from "./components/Flyer";
+import Banner from "./components/Banner";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter as Router, Routes, Route, useLocation, Link } from "react-router-dom";
@@ -56,6 +57,7 @@ function AnimatedRoutes() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/flyer" element={<Flyer />} />
+          <Route path="/banner" element={<Banner />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
@@ -175,21 +177,21 @@ function Frame() {
     damping: 30,
     restDelta: 0.001
   });
-  const flyer = pathname === "/flyer";
+  const bare = pathname === "/flyer" || pathname === "/banner";
 
   return (
     <div className="min-h-screen flex flex-col bg-brand-cream text-brand-dark selection:bg-brand-yellow selection:text-brand-dark">
-      {!flyer && (
+      {!bare && (
         <motion.div
           className="fixed top-0 left-0 right-0 h-px bg-brand-yellow z-[60] origin-left"
           style={{ scaleX }}
         />
       )}
-      {!flyer && <Navbar />}
+      {!bare && <Navbar />}
       <main className="flex-grow">
         <AnimatedRoutes />
       </main>
-      {!flyer && <Footer />}
+      {!bare && <Footer />}
     </div>
   );
 }

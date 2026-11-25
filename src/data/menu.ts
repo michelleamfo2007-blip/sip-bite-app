@@ -25,7 +25,7 @@ export const menuData = {
     { id: "d5", name: "Juice", price: 10, image: juiceImg },
   ],
   kebab: [
-    { id: "r3", name: "Sausage Kebab", price: 20, description: "Grilled sausage on a stick, served in the cup", image: sausageImg },
+    { id: "r3", name: "Sausage Kebab", price: 10, description: "Grilled sausage on a stick, served in the cup", image: sausageImg },
   ],
   fries: [
     { id: "r4", name: "Fries", price: 40, description: "Golden crispy potato fries", image: friesImg },
